@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10-Min Micro Skill — v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&family=Noto+Sans+Thai:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0B0F1C;--sf:#141927;--sf2:#1C2338;--bd:#252D45;--tx:#EEE9D8;--mu:#666E8A;
+      --ye:#F5C842;--co:#FF6B51;--mi:#3ECFAA;--lv:#A78BFA;--sk:#38BDF8;--ro:#F472B6;
+      --rl:#FF6B6B;--gl:#4ADE80;--ice:#7DD3FC}
+[data-theme="light"]{--bg:#FAF7EE;--sf:#FFFFFF;--sf2:#F3EFE3;--bd:#E0DAC8;--tx:#1A1F2E;--mu:#6B7280;
+      --ye:#C99A20;--co:#E55534;--mi:#1FA888;--lv:#7C5DF5;--sk:#0EA5E9;--ro:#DB2777;
+      --rl:#DC2626;--gl:#16A34A;--ice:#0284C7}
+html,body{min-height:100%;font-family:'Noto Sans Thai',sans-serif;background:var(--bg);color:var(--tx);transition:background .25s,color .25s}
+body{display:flex;justify-content:center;padding:1rem}
+#app{width:100%;max-width:440px}
+.screen{display:none}.screen.active{display:block}
+.hw{padding:1.4rem 1.5rem 2.5rem;display:flex;flex-direction:column;gap:1.1rem}
+.brow{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
+.bname{display:flex;align-items:center;gap:.5rem;min-width:0}
+.bdot{width:9px;height:9px;border-radius:50%;background:var(--ye);animation:pl 2s infinite;flex-shrink:0}
+@keyframes pl{0%,100%{opacity:1}50%{opacity:.35}}
+.btext{font-size:11px;letter-spacing:.12em;color:var(--mu);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbar{display:flex;gap:.32rem;flex-shrink:0}
+.spill{background:var(--sf);border:1.5px solid var(--bd);border-radius:20px;padding:.26rem .55rem;
+       display:flex;align-items:center;gap:.25rem;font-size:12px;font-weight:700;cursor:pointer}
+.spill span{color:var(--mu);font-weight:400;font-size:10.5px}
+.htitle{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:700;line-height:1.15}
+.htitle em{font-style:italic;color:var(--ye)}
+.slabel{font-size:10px;letter-spacing:.1em;color:var(--mu);font-weight:500;margin-bottom:.45rem}
+
+/* Daily goal ring */
+.goalcard{background:var(--sf);border:1.5px solid var(--bd);border-radius:14px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem}
+.ringwrap{position:relative;width:54px;height:54px;flex-shrink:0}
+.ringwrap svg{transform:rotate(-90deg)}
+.ringbg{stroke:var(--bd);fill:none;stroke-width:5}
+.ringfg{stroke:var(--ye);fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .6s}
+.ringtxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.95rem;color:var(--ye)}
+.goalinfo{flex:1;min-width:0}
+.goallbl{font-size:10px;letter-spacing:.1em;color:var(--mu);font-weight:700}
+.goalval{font-size:13px;font-weight:700;margin-top:2px}
+.goalsub{font-size:11px;color:var(--mu);margin-top:1px}
+
+/* Today section cards */
+.timegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+.tbtn{background:var(--sf);border:1.5px solid var(--bd);border-radius:12px;padding:.7rem .4rem;
+      cursor:pointer;transition:all .18s;text-align:center;color:var(--tx)}
+.tbtn:hover{border-color:var(--ye)}.tbtn.active{border-color:var(--ye);background:rgba(245,200,66,.1)}
+.tnum{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1;color:var(--ye);display:block}
+.tunit{font-size:10px;color:var(--mu);display:block;margin-top:2px}
+.catgrid{display:flex;flex-direction:column;gap:.38rem}
+.cbtn{background:var(--sf);border:1.5px solid var(--bd);border-radius:12px;padding:.62rem .8rem;
+      cursor:pointer;display:flex;align-items:center;gap:.55rem;text-align:left;color:var(--tx);width:100%}
+.cicon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.cinfo{flex:1;min-width:0}.ctitle{font-size:12.5px;font-weight:700}.cdesc{font-size:10.5px;color:var(--mu);margin-top:1px}
+.cprog{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.cptext{font-size:10px;color:var(--mu)}.cpbar{width:36px;height:3px;background:var(--bd);border-radius:2px;overflow:hidden}
+.cpfill{height:100%;border-radius:2px;transition:width .4s}
+.startbtn{background:var(--ye);color:#0B0F1C;border:none;border-radius:12px;padding:.85rem;
+          font-size:14px;font-weight:700;font-family:'Noto Sans Thai',sans-serif;cursor:pointer;width:100%}
+.startbtn:hover{background:#f5d060;transform:translateY(-1px)}
+
+/* Cards */
+.cardwrap,.quizwrap,.reswrap,.statwrap{padding:1.1rem 1.5rem 2rem;display:flex;flex-direction:column;gap:.9rem;min-height:100vh}
+.reswrap{padding:1.5rem 1.5rem 2.5rem;align-items:center;gap:1rem}
+.toprow{display:flex;align-items:center;justify-content:space-between}
+.backbtn{background:var(--sf);border:1.5px solid var(--bd);border-radius:8px;padding:.25rem .62rem;
+         font-size:12px;color:var(--mu);cursor:pointer;font-family:'Noto Sans Thai',sans-serif}
+.backbtn:hover{color:var(--tx)}
+.timerbadge{background:var(--sf);border:1.5px solid var(--bd);border-radius:8px;padding:.25rem .62rem;
+            font-size:12.5px;display:flex;align-items:center;gap:.3rem;font-weight:700}
+.tdot{width:5px;height:5px;border-radius:50%;animation:pl 1s infinite}
+.progbar{height:3px;background:var(--bd);border-radius:2px;overflow:hidden}
+.progfill{height:100%;border-radius:2px;transition:width .4s}
+.catbadge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.07em;padding:.24rem .58rem;border-radius:6px}
+.revbadge{font-size:9.5px;color:var(--mu);border:1px solid var(--bd);border-radius:5px;padding:.14rem .38rem;margin-left:.35rem}
+.cardmain{background:var(--sf);border:1.5px solid var(--bd);border-radius:18px;padding:1.2rem;
+          display:flex;flex-direction:column;gap:.85rem}
+.cardtitle{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;line-height:1.25}
+.scbadge{display:inline-block;background:var(--sf2);border:1.5px solid var(--bd);border-radius:8px;
+         padding:.35rem .78rem;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.05em}
+.cardbody{font-size:13px;line-height:1.8;color:rgba(238,233,216,.82)}
+.egbox{background:var(--sf2);border-left:3px solid var(--co);border-radius:0 8px 8px 0;
+       padding:.55rem .78rem;font-size:11.5px;color:var(--mu);line-height:1.65}
+.eglabel{font-size:9px;letter-spacing:.1em;color:var(--co);font-weight:700;margin-bottom:.2rem}
+.tkbox{border-radius:9px;padding:.72rem .88rem;background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.18)}
+.tklabel{font-size:9px;letter-spacing:.1em;font-weight:700;margin-bottom:.2rem;color:var(--ye)}
+.tktext{font-size:12.5px;font-weight:700;line-height:1.5}
+.nextbtn{background:var(--co);color:#fff;border:none;border-radius:11px;padding:.75rem;
+         font-size:13px;font-weight:700;font-family:'Noto Sans Thai',sans-serif;cursor:pointer}
+.nextbtn:hover{background:#ff7e68;transform:translateY(-1px)}
+
+/* Quiz */
+.quiztag{font-size:10px;letter-spacing:.1em;font-weight:700;margin-bottom:.25rem;color:var(--lv)}
+.quizq{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;line-height:1.35}
+.qcounter{font-size:10.5px;color:var(--mu);margin-left:auto}
+.optgrid{display:flex;flex-direction:column;gap:.4rem}
+.opt{background:var(--sf);border:1.5px solid var(--bd);border-radius:11px;padding:.78rem .9rem;
+     cursor:pointer;transition:all .18s;font-size:12.5px;font-family:'Noto Sans Thai',sans-serif;
+     color:var(--tx);text-align:left;line-height:1.5;width:100%}
+.opt:hover{border-color:var(--lv);background:rgba(167,139,250,.06)}
+.opt.correct{border-color:var(--gl);background:rgba(74,222,128,.1);color:var(--gl);animation:pop .3s}
+.opt.wrong{border-color:var(--rl);background:rgba(255,107,107,.1);color:var(--rl);animation:shk .4s}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.015)}100%{transform:scale(1)}}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.opt.dis{pointer-events:none;opacity:.4}
+.fbbox{border-radius:11px;padding:.78rem .9rem;font-size:12.5px;line-height:1.65;display:none}
+.fbbox.show{display:block}.fbbox.ok{background:rgba(74,222,128,.1);border:1.5px solid rgba(74,222,128,.3);color:var(--gl)}
+.fbbox.ng{background:rgba(255,107,107,.1);border:1.5px solid rgba(255,107,107,.3);color:var(--rl)}
+.fblabel{font-size:9.5px;letter-spacing:.08em;font-weight:700;margin-bottom:.18rem}
+.seebtn{background:var(--lv);color:#0B0F1C;border:none;border-radius:11px;padding:.75rem;
+        font-size:13px;font-weight:700;font-family:'Noto Sans Thai',sans-serif;cursor:pointer;display:none;width:100%}
+.seebtn.show{display:block}
+
+/* Result */
+.resicon{border-radius:50%;display:flex;align-items:center;justify-content:center;
+         animation:rp .5s cubic-bezier(.34,1.56,.64,1);width:90px;height:90px;font-size:2.5rem}
+@keyframes rp{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.restitle{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:700;text-align:center;line-height:1.3}
+.restitle em{font-style:italic;color:var(--ye)}
+.ressub{font-size:12px;color:var(--mu);text-align:center;line-height:1.65;margin-top:.25rem}
+.xpcard{background:var(--sf);border:1.5px solid var(--bd);border-radius:15px;padding:1rem;
+        width:100%;display:flex;flex-direction:column;gap:.6rem}
+.xprow{display:flex;justify-content:space-between;align-items:center}
+.xplabel{font-size:12px;color:var(--mu)}.xpval{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;line-height:1}
+.divider{height:1px;background:var(--bd);width:100%}
+
+/* SM-2 rating buttons */
+.ratewrap{width:100%;display:flex;flex-direction:column;gap:.5rem}
+.ratelbl{font-size:10px;letter-spacing:.1em;color:var(--mu);font-weight:700;text-align:center}
+.rategrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
+.ratebtn{background:var(--sf);border:1.5px solid var(--bd);border-radius:10px;padding:.55rem .25rem;
+         cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;
+         font-family:'Noto Sans Thai',sans-serif;color:var(--tx)}
+.ratebtn:hover{transform:translateY(-1px)}
+.ratebtn[data-q="0"]{border-color:rgba(255,107,107,.45)}
+.ratebtn[data-q="2"]{border-color:rgba(255,107,81,.45)}
+.ratebtn[data-q="4"]{border-color:rgba(62,207,170,.45)}
+.ratebtn[data-q="5"]{border-color:rgba(74,222,128,.45)}
+.ratename{font-size:11.5px;font-weight:700}
+.ratenext{font-size:9.5px;color:var(--mu)}
+.ratebtn[data-q="0"] .ratename{color:var(--rl)}
+.ratebtn[data-q="2"] .ratename{color:var(--co)}
+.ratebtn[data-q="4"] .ratename{color:var(--mi)}
+.ratebtn[data-q="5"] .ratename{color:var(--gl)}
+
+.actbtns{display:flex;flex-direction:column;gap:.45rem;width:100%}
+.btnprim{background:var(--ye);color:#0B0F1C;border:none;border-radius:11px;padding:.78rem;
+         font-size:13px;font-weight:700;font-family:'Noto Sans Thai',sans-serif;cursor:pointer;width:100%}
+.btnprim:hover{background:#f5d060}
+.btnsec{background:transparent;color:var(--mu);border:1.5px solid var(--bd);border-radius:11px;
+        padding:.78rem;font-size:12.5px;font-family:'Noto Sans Thai',sans-serif;cursor:pointer;width:100%}
+.btnsec:hover{color:var(--tx);border-color:var(--mu)}
+
+/* Stats */
+.stattitle{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700}
+.statcard{background:var(--sf);border:1.5px solid var(--bd);border-radius:16px;padding:1.05rem;
+          display:flex;flex-direction:column;gap:.7rem}
+.bigstat{display:flex;justify-content:space-around;text-align:center;gap:.5rem}
+.bignum{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;line-height:1;display:block}
+.biglab{font-size:10px;color:var(--mu);margin-top:3px}
+
+/* Level bar */
+.levelhead{display:flex;align-items:center;justify-content:space-between}
+.levelno{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--lv);line-height:1}
+.levelnext{font-size:11px;color:var(--mu)}
+.levelbar{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin-top:.3rem}
+.levelfill{height:100%;background:linear-gradient(90deg,var(--lv),var(--sk));border-radius:3px;transition:width .6s}
+
+/* Category progress */
+.catrow{display:flex;align-items:center;gap:.65rem;padding:.3rem 0}
+.catrowbar{flex:2;height:4px;background:var(--bd);border-radius:2px;overflow:hidden}
+.catrowfill{height:100%;border-radius:2px;transition:width .6s}
+.catrowpct{font-size:11px;color:var(--mu);width:30px;text-align:right;flex-shrink:0}
+
+/* Heatmap */
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:.4rem}
+.hmcell{aspect-ratio:1;border-radius:3px;background:var(--bd);transition:background .2s;cursor:default;position:relative}
+.hmcell[data-l="1"]{background:rgba(74,222,128,.25)}
+.hmcell[data-l="2"]{background:rgba(74,222,128,.5)}
+.hmcell[data-l="3"]{background:rgba(74,222,128,.75)}
+.hmcell[data-l="4"]{background:var(--gl);box-shadow:0 0 6px rgba(74,222,128,.4)}
+.hmcell[data-today="1"]{outline:2px solid var(--ye);outline-offset:1px}
+.heatlegend{display:flex;align-items:center;gap:.35rem;font-size:10px;color:var(--mu);justify-content:flex-end;margin-top:.5rem}
+.heatlegend .hmcell{width:11px;height:11px;aspect-ratio:auto;cursor:default}
+
+/* Badges */
+.badgegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem}
+.badge{aspect-ratio:1;background:var(--sf2);border:1.5px solid var(--bd);border-radius:12px;
+       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+       padding:.3rem;position:relative;transition:all .25s}
+.badge.unlocked{border-color:var(--ye);background:rgba(245,200,66,.1);box-shadow:0 0 10px rgba(245,200,66,.15)}
+.badge.unlocked .bgico{filter:none;opacity:1}
+.bgico{font-size:1.4rem;filter:grayscale(1);opacity:.35}
+.bgname{font-size:9px;color:var(--mu);text-align:center;line-height:1.2}
+.badge.unlocked .bgname{color:var(--tx);font-weight:700}
+
+/* Settings inside stats */
+.settingrow{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.45rem 0;border-bottom:1px solid var(--bd)}
+.settingrow:last-child{border-bottom:none}
+.setlbl{font-size:12.5px}
+.setdesc{font-size:10.5px;color:var(--mu);margin-top:1px}
+.slider{flex:1;max-width:130px;-webkit-appearance:none;appearance:none;height:4px;background:var(--bd);border-radius:2px;outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--ye);cursor:pointer}
+.slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ye);cursor:pointer;border:none}
+.goalval2{font-family:'Bebas Neue',sans-serif;color:var(--ye);font-size:1.1rem;min-width:42px;text-align:right}
+.toggle{position:relative;width:38px;height:22px;background:var(--bd);border-radius:11px;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle.on{background:var(--gl)}.toggle.on::after{transform:translateX(16px)}
+
+.tip-card{background:rgba(245,200,66,.06);border:1.5px solid rgba(245,200,66,.18);border-radius:12px;padding:1rem}
+.tip-label{font-size:9.5px;letter-spacing:.1em;color:var(--ye);font-weight:700;margin-bottom:.4rem}
+.tip-text{font-size:12.5px;line-height:1.7;color:var(--tx)}
+.resetbtn{background:transparent;color:var(--mu);border:1.5px solid var(--bd);border-radius:11px;
+          padding:.6rem;font-size:11.5px;font-family:'Noto Sans Thai',sans-serif;cursor:pointer;width:100%}
+.resetbtn:hover{color:var(--rl);border-color:var(--rl)}
+
+/* Today deck sections */
+.td-section{background:var(--sf);border:1.5px solid var(--bd);border-radius:14px;padding:.85rem 1rem}
+.td-sec-head{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:.55rem}
+.td-badge{font-size:11px;font-weight:700;padding:.2rem .55rem;border-radius:20px}
+.due-badge{background:rgba(255,107,81,.15);color:var(--co)}
+.new-badge{background:rgba(62,207,170,.15);color:var(--mi)}
+.td-list{display:flex;flex-direction:column;gap:.32rem}
+.td-item{display:flex;align-items:center;gap:.55rem;padding:.5rem .62rem;background:var(--sf2);border-radius:9px;cursor:pointer;font-size:12.5px;transition:background .15s}
+.td-item:hover{background:var(--bd)}
+.td-item-ico{font-size:1rem;flex-shrink:0}
+.td-item-t{flex:1;color:var(--tx)}
+.td-empty{font-size:12px;color:var(--mu);text-align:center;padding:.6rem 0}
+.td-alt-btn{background:var(--sf);border:1.5px solid var(--bd);border-radius:11px;padding:.72rem;font-size:12.5px;color:var(--mu);cursor:pointer;font-family:'Noto Sans Thai',sans-serif;transition:all .15s}
+.td-alt-btn:hover{color:var(--tx);border-color:var(--mu)}
+
+/* Browse */
+.br-search{width:100%;background:var(--sf);border:1.5px solid var(--bd);border-radius:11px;padding:.7rem .9rem;font-size:13px;color:var(--tx);font-family:'Noto Sans Thai',sans-serif;outline:none}
+.br-search:focus{border-color:var(--lv)}
+.br-tabs{display:flex;gap:.38rem;overflow-x:auto;padding-bottom:.3rem;scrollbar-width:none}
+.br-tabs::-webkit-scrollbar{display:none}
+.br-tab{background:var(--sf);border:1.5px solid var(--bd);border-radius:20px;padding:.3rem .72rem;font-size:11px;color:var(--mu);cursor:pointer;white-space:nowrap;font-family:'Noto Sans Thai',sans-serif;flex-shrink:0}
+.br-tab.active{border-color:var(--lv);color:var(--lv);background:rgba(167,139,250,.1)}
+.br-list{display:flex;flex-direction:column;gap:.38rem}
+.br-item{background:var(--sf);border:1.5px solid var(--bd);border-radius:12px;padding:.72rem .88rem;cursor:pointer;display:flex;align-items:center;gap:.62rem;transition:background .15s}
+.br-item:hover{background:var(--sf2)}
+.br-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.br-title{font-size:12.5px;font-weight:600;color:var(--tx);margin-bottom:.18rem}
+.br-sub{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.br-badge{font-size:9.5px;padding:.14rem .42rem;border-radius:4px}
+.br-badge.done{background:rgba(74,222,128,.12);color:var(--gl)}
+.br-badge.due{background:rgba(255,107,81,.12);color:var(--co)}
+.br-badge.bm{color:var(--ye)}
+.br-cat{font-size:9.5px;color:var(--mu)}
+.br-empty{text-align:center;color:var(--mu);font-size:12.5px;padding:1.5rem 0}
+#bmbtn{background:none;border:none;font-size:1.3rem;cursor:pointer;padding:.2rem .4rem;transition:transform .2s}
+#bmbtn:active{transform:scale(1.3)}
+
+/* Toast (badge unlocked) */
+#toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%) translateY(-120%);
+       background:var(--sf2);border:1.5px solid var(--ye);border-radius:14px;padding:.7rem 1rem;
+       display:flex;align-items:center;gap:.6rem;z-index:1000;transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+       box-shadow:0 8px 24px rgba(0,0,0,.5);max-width:90vw}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast .ti{font-size:1.6rem}
+#toast .tt{font-size:10px;color:var(--ye);letter-spacing:.1em;font-weight:700}
+#toast .tn{font-size:13px;font-weight:700}
+
+.swipe-hint{font-size:10px;color:var(--mu);text-align:center;opacity:.6}
+.lvlpill{display:inline-flex;align-items:center;gap:.25rem;background:rgba(167,139,250,.12);color:var(--lv);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:.18rem .55rem;font-size:11px;font-weight:700}
+
+/* TTS button */
+.ttsbtn{background:var(--sf);border:1.5px solid var(--bd);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);font-size:15px;transition:all .15s}
+.ttsbtn:hover{border-color:var(--sk);color:var(--sk)}
+.ttsbtn.playing{border-color:var(--sk);color:var(--sk);background:rgba(56,189,248,.12);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.4)}50%{box-shadow:0 0 0 6px rgba(56,189,248,0)}}
+
+/* Notes */
+.notebox{background:var(--sf);border:1.5px dashed var(--bd);border-radius:12px;padding:.7rem .85rem;margin-top:.6rem}
+.notelbl{font-size:10px;letter-spacing:.1em;color:var(--mu);font-weight:700;margin-bottom:.35rem;display:flex;align-items:center;gap:.3rem}
+.notearea{width:100%;background:transparent;border:none;color:var(--tx);font-family:inherit;font-size:13px;line-height:1.5;resize:vertical;min-height:42px;outline:none}
+.notearea::placeholder{color:var(--mu);opacity:.7}
+.notesave{font-size:10px;color:var(--mi);margin-top:.2rem;opacity:0;transition:opacity .3s}
+.notesave.show{opacity:1}
+
+/* Card swipe */
+.cardmain{transition:transform .25s ease,opacity .25s ease;touch-action:pan-y}
+.cardmain.swipe-left{transform:translateX(-30px);opacity:.5}
+.cardmain.swipe-right{transform:translateX(30px);opacity:.5}
+
+/* Theme toggle button in header */
+.themebtn{background:var(--sf);border:1.5px solid var(--bd);border-radius:20px;padding:.26rem .5rem;cursor:pointer;color:var(--tx);font-size:13px;display:flex;align-items:center;gap:.25rem}
+</style>
+</head>
+<body>
+
+<div id="toast"><div class="ti">🏆</div><div><div class="tt">BADGE UNLOCKED</div><div class="tn" id="toast-n"></div></div></div>
+
+<div id="app">
+
+<!-- TODAY'S DECK -->
+<div class="screen" id="sd">
+<div class="hw" style="gap:.9rem">
+  <div class="brow">
+    <div class="bname"><div class="bdot"></div><span class="btext">10-MIN MICRO SKILL · v3</span></div>
+    <div class="sbar">
+      <button class="themebtn" onclick="toggleTheme()" id="themebtn" title="สลับธีม">🌙</button>
+      <div class="spill" onclick="goStats()">🧊 <span id="td-frz">0</span></div>
+      <div class="spill" onclick="goStats()">🔥 <span id="td-sst">0</span></div>
+      <div class="spill" onclick="goStats()">⚡ <span id="td-sxp">0</span> <span>XP</span></div>
+    </div>
+  </div>
+  <div>
+    <div id="td-date" style="font-size:11px;color:var(--mu);margin-bottom:.3rem"></div>
+    <h2 id="td-gr" style="font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700"></h2>
+    <div style="display:flex;align-items:center;gap:.5rem;margin-top:.35rem">
+      <span class="lvlpill">LVL <span id="td-lvl">1</span></span>
+      <p style="font-size:12px;color:var(--mu)">มีอะไรรออยู่วันนี้?</p>
+    </div>
+  </div>
+  <div class="goalcard">
+    <div class="ringwrap">
+      <svg width="54" height="54" viewBox="0 0 54 54">
+        <circle class="ringbg" cx="27" cy="27" r="22"/>
+        <circle id="td-ring" class="ringfg" cx="27" cy="27" r="22" stroke-dasharray="138.23" stroke-dashoffset="138.23"/>
+      </svg>
+      <div class="ringtxt" id="td-ringtxt">0%</div>
+    </div>
+    <div class="goalinfo">
+      <div class="goallbl">DAILY GOAL</div>
+      <div class="goalval" id="td-goalval">0 / 50 XP</div>
+      <div class="goalsub" id="td-goalsub">เริ่มเรียนเพื่อสะสม XP วันนี้</div>
+    </div>
+  </div>
+  <div class="td-section">
+    <div class="td-sec-head">
+      <span>🔁 ทบทวนวันนี้</span>
+      <span class="td-badge due-badge" id="td-due">0</span>
+    </div>
+    <div id="td-duelist" class="td-list"></div>
+  </div>
+  <div class="td-section">
+    <div class="td-sec-head">
+      <span>✨ บทใหม่พร้อมเรียน</span>
+      <span class="td-badge new-badge" id="td-new">0</span>
+    </div>
+    <div id="td-newlist" class="td-list"></div>
+  </div>
+  <button class="startbtn" onclick="startToday()">เริ่มเรียนวันนี้เลย →</button>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.45rem">
+    <button class="td-alt-btn" onclick="showScreen('sh')">☰ เลือกเองไป</button>
+    <button class="td-alt-btn" onclick="goBrowse()">🔍 ดูทั้งหมด</button>
+  </div>
+</div>
+</div>
+
+<!-- BROWSE ALL -->
+<div class="screen" id="sbr">
+<div class="hw" style="padding-bottom:2.5rem">
+  <div class="toprow">
+    <button class="backbtn" onclick="goToday()">← กลับ</button>
+    <span style="font-size:12px;color:var(--mu)">บทเรียนทั้งหมด</span>
+  </div>
+  <input id="br-search" type="text" class="br-search" placeholder="🔍 ค้นหาบทเรียน..." oninput="filterBrowse()">
+  <div id="br-tabs" class="br-tabs"></div>
+  <div id="br-list" class="br-list"></div>
+</div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="sh">
+<div class="hw">
+  <div class="toprow">
+    <button class="backbtn" onclick="goToday()">← กลับ</button>
+    <span style="font-size:11px;color:var(--mu)">เลือกหมวดเอง</span>
+  </div>
+  <div>
+    <p class="slabel">เวลาที่มี</p>
+    <div class="timegrid">
+      <button class="tbtn" onclick="selTime(5,this)"><span class="tnum">5</span><span class="tunit">นาที</span></button>
+      <button class="tbtn active" onclick="selTime(10,this)"><span class="tnum">10</span><span class="tunit">นาที</span></button>
+      <button class="tbtn" onclick="selTime(15,this)"><span class="tnum">15</span><span class="tunit">นาที</span></button>
+    </div>
+  </div>
+  <div>
+    <p class="slabel">เลือกหมวด</p>
+    <div class="catgrid" id="catgrid"></div>
+  </div>
+  <button class="startbtn" onclick="startLesson()">เริ่มเรียนเลย →</button>
+</div>
+</div>
+
+<!-- CARD -->
+<div class="screen" id="sc">
+<div class="cardwrap">
+  <div class="toprow">
+    <button class="backbtn" onclick="goToday()">← กลับ</button>
+    <div style="display:flex;align-items:center;gap:.4rem">
+      <button class="ttsbtn" id="ttsbtn" onclick="toggleTTS()" title="อ่านออกเสียง">🔊</button>
+      <button id="bmbtn" onclick="toggleBm()">☆</button>
+      <div class="timerbadge"><div class="tdot" style="background:var(--ye)"></div><span id="t1">10:00</span></div>
+    </div>
+  </div>
+  <div class="progbar"><div class="progfill" id="pf1" style="width:25%"></div></div>
+  <div style="display:flex;align-items:center;gap:.38rem">
+    <div class="catbadge" id="cbadge"></div>
+    <span class="revbadge" id="rvbadge" style="display:none">ทบทวน</span>
+    <span id="lnum" style="font-size:10px;color:var(--mu);margin-left:auto"></span>
+  </div>
+  <div class="cardmain" id="cardmain">
+    <h2 class="cardtitle" id="cardtitle"></h2>
+    <div class="scbadge" id="scbadge" style="display:none"></div>
+    <p class="cardbody" id="cardbody"></p>
+    <div class="egbox"><div class="eglabel">ตัวอย่าง</div><span id="cardeg"></span></div>
+    <div class="tkbox"><div class="tklabel">✦ จำไว้อย่างเดียว</div><div class="tktext" id="tktext"></div></div>
+    <div class="notebox">
+      <div class="notelbl">📝 โน้ตของฉัน <span class="notesave" id="notesave">บันทึกแล้ว</span></div>
+      <textarea class="notearea" id="noteinput" placeholder="จดไอเดีย หรือเชื่อมโยงกับงานจริงของคุณ..." oninput="saveNote()"></textarea>
+    </div>
+  </div>
+  <div class="swipe-hint">← ปัดซ้ายเพื่อทำควิซ · ปัดขวาเพื่อย้อนกลับ →</div>
+  <button class="nextbtn" onclick="goQuiz()">เริ่มทำควิซ 3 ข้อ →</button>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="sq">
+<div class="quizwrap">
+  <div class="toprow">
+    <button class="backbtn" onclick="showScreen('sc')">← กลับ</button>
+    <div class="timerbadge"><div class="tdot" style="background:var(--ye)"></div><span id="t2">10:00</span></div>
+  </div>
+  <div class="progbar"><div class="progfill" id="pf2" style="width:50%"></div></div>
+  <div style="display:flex;align-items:center;gap:.4rem">
+    <div class="quiztag" id="qtag">🎯 QUICK QUIZ</div>
+    <span class="qcounter" id="qcounter">ข้อ 1 / 3</span>
+  </div>
+  <h2 class="quizq" id="quizq"></h2>
+  <div class="optgrid" id="optgrid"></div>
+  <div class="fbbox" id="fbbox"><div class="fblabel" id="fblabel"></div><div id="fbtext"></div></div>
+  <button class="seebtn" id="seebtn" onclick="nextQuestion()">ข้อต่อไป →</button>
+</div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="sr">
+<div class="reswrap">
+  <div class="resicon" id="resicon">⚡</div>
+  <div>
+    <h2 class="restitle" id="restitle"></h2>
+    <p class="ressub" id="ressub"></p>
+  </div>
+  <div class="xpcard">
+    <div class="xprow"><span class="xplabel">XP ที่ได้รับ</span><span class="xpval" id="xpe" style="color:var(--ye)">+0</span></div>
+    <div class="divider"></div>
+    <div class="xprow"><span class="xplabel">คะแนนควิซ</span><span class="xpval" id="xsc" style="color:var(--gl)">0 / 3</span></div>
+    <div class="xprow"><span class="xplabel">เวลาที่ใช้</span><span class="xpval" id="xtu" style="color:var(--mi)">0:00</span></div>
+  </div>
+
+  <div class="ratewrap" id="ratewrap">
+    <div class="ratelbl">📅 ประเมินตัวเอง — บทนี้จำได้แค่ไหน?</div>
+    <div class="rategrid">
+      <button class="ratebtn" data-q="0" onclick="rate(0)"><div class="ratename">Again</div><div class="ratenext" id="rn0">&lt;10น.</div></button>
+      <button class="ratebtn" data-q="2" onclick="rate(2)"><div class="ratename">Hard</div><div class="ratenext" id="rn2">1วัน</div></button>
+      <button class="ratebtn" data-q="4" onclick="rate(4)"><div class="ratename">Good</div><div class="ratenext" id="rn4">3วัน</div></button>
+      <button class="ratebtn" data-q="5" onclick="rate(5)"><div class="ratename">Easy</div><div class="ratenext" id="rn5">6วัน</div></button>
+    </div>
+  </div>
+
+  <div class="actbtns" id="resactions" style="display:none">
+    <button class="btnprim" id="nextbtn" onclick="nextLesson()">เรียนบทต่อไป →</button>
+    <button class="btnsec" onclick="goToday()">กลับหน้าหลัก</button>
+  </div>
+</div>
+</div>
+
+<!-- STATS -->
+<div class="screen" id="ss">
+<div class="statwrap">
+  <div class="toprow">
+    <button class="backbtn" onclick="goToday()">← กลับ</button>
+    <span style="font-size:11px;color:var(--mu);letter-spacing:.08em">MY PROGRESS</span>
+  </div>
+  <h2 class="stattitle">Stats <em style="font-style:italic;color:var(--ye)">Dashboard</em></h2>
+
+  <div class="statcard">
+    <div class="levelhead">
+      <div>
+        <div style="font-size:10px;letter-spacing:.1em;color:var(--mu);font-weight:700">LEVEL</div>
+        <span class="levelno" id="st-lvl">1</span>
+      </div>
+      <div style="text-align:right">
+        <div class="levelnext" id="st-lvlnext">0 / 100 XP</div>
+        <div style="font-size:10px;color:var(--mu);margin-top:2px" id="st-lvltitle">Beginner</div>
+      </div>
+    </div>
+    <div class="levelbar"><div class="levelfill" id="st-lvlfill" style="width:0%"></div></div>
+  </div>
+
+  <div class="statcard">
+    <div class="bigstat">
+      <div><span class="bignum" id="st-streak" style="color:var(--ye)">0</span><div class="biglab">🔥 Streak</div></div>
+      <div><span class="bignum" id="st-frz" style="color:var(--ice)">0</span><div class="biglab">🧊 Freeze</div></div>
+      <div><span class="bignum" id="st-xp" style="color:var(--lv)">0</span><div class="biglab">⚡ XP</div></div>
+      <div><span class="bignum" id="st-done" style="color:var(--mi)">0</span><div class="biglab">📚 บท</div></div>
+    </div>
+  </div>
+
+  <div>
+    <p class="slabel" style="margin-bottom:.5rem">🗓️ Activity 49 วันล่าสุด</p>
+    <div class="statcard">
+      <div class="heatmap" id="heatmap"></div>
+      <div class="heatlegend">
+        <span>น้อย</span>
+        <div class="hmcell"></div>
+        <div class="hmcell" data-l="1"></div>
+        <div class="hmcell" data-l="2"></div>
+        <div class="hmcell" data-l="3"></div>
+        <div class="hmcell" data-l="4"></div>
+        <span>มาก</span>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p class="slabel" style="margin-bottom:.5rem">🏆 Badges <span id="st-badgecount" style="color:var(--ye)"></span></p>
+    <div class="statcard">
+      <div class="badgegrid" id="badgegrid"></div>
+    </div>
+  </div>
+
+  <div>
+    <p class="slabel" style="margin-bottom:.5rem">⚙️ Settings</p>
+    <div class="statcard">
+      <div class="settingrow">
+        <div><div class="setlbl">🎯 เป้า XP ต่อวัน</div><div class="setdesc">XP ขั้นต่ำที่อยากเก็บแต่ละวัน</div></div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <input type="range" class="slider" min="20" max="200" step="10" id="goalslider">
+          <span class="goalval2" id="goalv">50</span>
+        </div>
+      </div>
+      <div class="settingrow">
+        <div><div class="setlbl">🔔 แจ้งเตือนทบทวน</div><div class="setdesc">เด้งเตือนเมื่อมีบทค้างทบทวน</div></div>
+        <div class="toggle" id="notiftog" onclick="toggleNotif()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p class="slabel" style="margin-bottom:.5rem">📊 ความก้าวหน้าแต่ละหมวด</p>
+    <div class="statcard" id="catproglist"></div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-label">💡 TIP OF THE DAY</div>
+    <div class="tip-text" id="tiptext"></div>
+  </div>
+  <button class="resetbtn" onclick="resetProgress()">รีเซตความก้าวหน้าทั้งหมด</button>
+</div>
+</div>
+
+</div>
+
+<script>
+const DATA = {"excel": [{"t": "เปิด AutoFilter ใน 1 วินาที", "sc": "Ctrl + Shift + L", "b": "กดคีย์ลัดนี้เดียว ทุกคอลัมน์จะมีปุ่มกรองข้อมูลโผล่ขึ้นทันที ไม่ต้องเสียเวลาคลิกผ่านเมนู Data อีกต่อไป", "eg": "ตารางลูกค้า 500 แถว → กด Ctrl+Shift+L → กรองเฉพาะลูกค้าภาคเหนือได้ใน 2 วิ", "tk": "Ctrl+Shift+L เปิด/ปิด Filter ทุกคอลัมน์พร้อมกัน", "q": "คีย์ลัดใดเปิด AutoFilter ใน Excel?", "o": ["Ctrl + F", "Ctrl + Shift + L", "Alt + D + F", "Ctrl + T"], "a": 1, "c": "ถูก! Ctrl+Shift+L เปิด Filter ทันที ลองกดวันนี้เลย", "w": "คำตอบที่ถูกคือ Ctrl+Shift+L จำง่ายๆ ว่า L = List Filter"}, {"t": "รวมผลตัวเลขในพริบตา", "sc": "Alt + =", "b": "วางเคอร์เซอร์ใต้คอลัมน์ตัวเลข กด Alt+= ได้ผลรวม SUM ทันทีโดยไม่ต้องพิมพ์สูตรเอง", "eg": "มีตัวเลข 10 แถว → กด Alt+= → ได้ผลรวมทันที ประหยัดเวลาไป 30 วิต่อครั้ง", "tk": "Alt+= = ผลรวม SUM อัตโนมัติ ไม่ต้องพิมพ์สูตรเอง", "q": "Alt + = ทำอะไรใน Excel?", "o": ["ลบแถวที่เลือก", "แทรกสูตร SUM อัตโนมัติ", "เปิดหน้าต่าง Find", "รวม Cell เข้าด้วยกัน"], "a": 1, "c": "ถูก! Alt+= คือ AutoSum ใช้บ่อยมากในชีวิตจริง", "w": "คำตอบถูกคือ แทรกสูตร SUM อัตโนมัติ"}, {"t": "ทำซ้ำสิ่งที่เพิ่งทำ", "sc": "F4", "b": "กด F4 หลังทำ action ใดๆ เช่น bold ระบายสี ใส่ border ระบบจะทำซ้ำ action เดิมทันที ไม่ต้องคลิกเมนูซ้ำ", "eg": "Bold ชื่อในแถวแรก → เลื่อนไปแถวถัดไป → กด F4 → Bold ทันที", "tk": "F4 = ทำซ้ำ action ล่าสุด ประหยัดเวลาได้หลายนาทีต่อวัน", "q": "F4 ใน Excel ทำหน้าที่อะไร?", "o": ["บันทึกไฟล์", "ทำซ้ำ action ล่าสุด", "เปิด Format Cells", "Undo การกระทำ"], "a": 1, "c": "ถูกต้อง! F4 = Repeat Last Action ใช้ได้ทุกวัน", "w": "คำตอบถูกคือ ทำซ้ำ action ล่าสุด"}, {"t": "กระโดดไปท้ายข้อมูลทันที", "sc": "Ctrl + ↓", "b": "กด Ctrl ค้างแล้วกดลูกศร ข้ามไปถึง cell สุดท้ายของข้อมูลในทิศนั้นทันที ไม่ต้องเลื่อน scroll ให้เมื่อยมือ", "eg": "ข้อมูล 1,000 แถว → กด Ctrl+↓ → ไปถึงแถวสุดท้ายใน 0.1 วินาที", "tk": "Ctrl+ลูกศร = กระโดดไปยัง cell สุดท้ายของข้อมูล ไม่ต้องเลื่อน", "q": "Ctrl+↓ ทำอะไรใน Excel?", "o": ["ลบ column ที่เลือก", "เพิ่มแถวใหม่", "กระโดดไปยัง cell สุดท้ายของข้อมูล", "คัดลอก column"], "a": 2, "c": "ถูก! Ctrl+ลูกศร กระโดดไปยัง cell สุดท้ายของกลุ่มข้อมูล", "w": "คำตอบถูกคือ กระโดดไปยัง cell สุดท้าย"}, {"t": "ตรึงแถวหัวตาราง", "sc": "View → Freeze Top Row", "b": "เมื่อข้อมูลยาวมาก แถวหัวตารางจะหายไปเวลา scroll ลงไป การ Freeze Top Row ทำให้แถวหัวยังอยู่ที่เดิมตลอด ไม่ว่าจะ scroll ไปถึงไหนก็เห็น header ครบ", "eg": "ตาราง 500 แถว → View → Freeze Panes → Freeze Top Row → scroll ลงเท่าไหร่ก็ยังเห็นชื่อคอลัมน์", "tk": "View → Freeze Panes → Freeze Top Row ตรึงหัวตารางไว้เสมอ", "q": "ทำไมถึงควรใช้ Freeze Top Row?", "o": ["ทำให้ไฟล์เล็กลง", "ทำให้แถวหัวตารางอยู่ที่เดิมเมื่อ scroll ลง", "ล็อกข้อมูลไม่ให้แก้ไข", "เร่งความเร็วการโหลดไฟล์"], "a": 1, "c": "ถูก! Freeze Top Row ช่วยให้เห็น header ตลอดเวลา ทำงานสะดวกขึ้นมาก", "w": "คำตอบถูกคือ ทำให้แถวหัวตารางอยู่ที่เดิมเมื่อ scroll ลง"}, {"t": "Flash Fill เดาแพทเทิร์นให้เลย", "sc": "Ctrl + E", "b": "พิมพ์ตัวอย่างผลลัพธ์ที่ต้องการ 1-2 แถว แล้วกด Ctrl+E Excel จะเดาแพทเทิร์นและเติมข้อมูลที่เหลือทั้งหมดให้อัตโนมัติ ไม่ต้องเขียนสูตร", "eg": "คอลัมน์ A มีชื่อ-นามสกุล → พิมพ์เฉพาะชื่อในคอลัมน์ B แถวแรก → กด Ctrl+E → Excel แยกชื่อออกให้ทุกแถว", "tk": "พิมพ์ตัวอย่าง 1-2 แถว แล้วกด Ctrl+E ให้ Excel ทำต่อ", "q": "Flash Fill (Ctrl+E) ใช้ทำอะไร?", "o": ["กรองข้อมูลอัตโนมัติ", "เดาแพทเทิร์นและเติมข้อมูลที่เหลือให้", "ลบข้อมูลซ้ำ", "รวม cell เข้าด้วยกัน"], "a": 1, "c": "ถูก! Flash Fill เดาแพทเทิร์นจากตัวอย่าง แล้วเติมข้อมูลที่เหลือให้อัตโนมัติ", "w": "คำตอบถูกคือ เดาแพทเทิร์นและเติมข้อมูลที่เหลือ"}, {"t": "เปิด Format Cells ฉับไว", "sc": "Ctrl + 1", "b": "กด Ctrl+1 เปิดหน้าต่าง Format Cells ได้ทันที ปรับ font สี border alignment format ตัวเลขได้ทุกอย่าง ไม่ต้องคลิกขวาหา Format Cells ในเมนู", "eg": "เลือก cell ที่ต้องการ → กด Ctrl+1 → หน้าต่าง Format Cells เปิดทันที → ปรับแต่งได้เลย", "tk": "Ctrl+1 = เปิด Format Cells ทุกครั้งที่อยากแต่ง format", "q": "Ctrl+1 ใน Excel เปิดอะไร?", "o": ["บันทึกไฟล์", "หน้าต่าง Format Cells", "Print Preview", "หน้าต่าง Insert"], "a": 1, "c": "ถูก! Ctrl+1 เปิด Format Cells ทันที ช่วยให้แต่ง format ได้เร็วขึ้นมาก", "w": "คำตอบถูกคือ หน้าต่าง Format Cells"}, {"t": "วางเฉพาะค่า ไม่เอา Format", "sc": "Ctrl + Alt + V", "b": "เวลาก็อปข้อมูลจาก cell ที่มี format แล้ววางปกติ format จะติดมาด้วย กด Ctrl+Alt+V แล้วเลือก Values เพื่อวางเฉพาะค่าอย่างเดียว", "eg": "ก็อปตัวเลขจากตารางที่มีสีพื้นหลัง → กด Ctrl+Alt+V → เลือก Values → วางได้โดยไม่ติดสีมา", "tk": "Ctrl+Alt+V → V → Enter = วางเฉพาะค่า ไม่ติด format มาด้วย", "q": "Paste Special ช่วยอะไรใน Excel?", "o": ["วางข้อมูลพร้อม format ทั้งหมด", "เลือกวางเฉพาะบางอย่าง เช่น ค่าอย่างเดียว", "วางหลาย cell พร้อมกัน", "ก็อปสูตรไปทั้งแถว"], "a": 1, "c": "ถูก! Paste Special ให้เลือกว่าจะวางแค่ค่า สูตร หรือ format", "w": "คำตอบถูกคือ เลือกวางเฉพาะบางอย่าง"}], "english": [{"t": "Circle back คืออะไร?", "sc": null, "b": "Let me circle back on that หมายถึงขอกลับมาดูเรื่องนี้ทีหลัง ใช้ในที่ประชุมเมื่อยังไม่มีคำตอบ หรืออยากเลื่อนการตัดสินใจออกไปก่อน", "eg": "ในประชุม: That is a great point. Let me circle back on the budget after I check with finance.", "tk": "Circle back = กลับมาคุยเรื่องนี้ภายหลัง ใช้แทน เดี๋ยวค่อยว่ากัน", "q": "Let me circle back on that หมายความว่าอะไร?", "o": ["ฉันไม่เห็นด้วย", "ฉันจะกลับมาคุยเรื่องนี้ทีหลัง", "ฉันเข้าใจแล้ว", "ฉันต้องออกจากห้องประชุม"], "a": 1, "c": "ถูก! Circle back = กลับมาดูทีหลัง ใช้บ่อยมากในออฟฟิศ", "w": "คำตอบถูกคือ กลับมาคุยทีหลัง"}, {"t": "Loop you in คืออะไร?", "sc": null, "b": "I will loop you in = ฉันจะเพิ่มคุณเข้ามาในลูปข้อมูลด้วย ใช้เมื่อจะเพิ่มใครเข้าใน email thread หรือแจ้งให้รู้เรื่องด้วย", "eg": "I will loop you in on the email thread so you are up to date with the project.", "tk": "Loop you in = เพิ่มเข้ามาใน email / รู้เรื่องด้วยกัน", "q": "I will loop you in หมายความว่าอะไร?", "o": ["ฉันจะไม่ส่ง email ให้คุณ", "ฉันจะเพิ่มคุณเข้ามาในการสื่อสารนี้ด้วย", "ฉันต้องถามเจ้านายก่อน", "ฉันจะโทรหาคุณ"], "a": 1, "c": "ถูกต้อง! Loop in = เพิ่มคนเข้ามาใน email chain", "w": "คำตอบถูกคือ เพิ่มเข้ามาในการสื่อสาร"}, {"t": "ปฏิเสธงานอย่างมืออาชีพ", "sc": null, "b": "I am at capacity right now ปฏิเสธงานอย่างสุภาพโดยบอกว่าไม่มีเวลา ไม่ใช่ไม่อยากทำ ฟังดูเป็นมืออาชีพมาก", "eg": "I would love to help with the presentation, but I am at capacity this week. Can we revisit next Monday?", "tk": "I am at capacity = ฉันไม่มีเวลาแล้ว ปฏิเสธสุภาพโดยไม่ดูขี้เกียจ", "q": "I am at capacity หมายความว่าอะไร?", "o": ["ฉันไม่เข้าใจงาน", "ฉันทำงานนี้เสร็จแล้ว", "ฉันไม่มีเวลารับงานเพิ่มแล้ว", "ฉันต้องการความช่วยเหลือ"], "a": 2, "c": "ถูก! At capacity = เต็มแล้ว ใช้ปฏิเสธงานได้อย่างสุภาพ", "w": "คำตอบถูกคือ ไม่มีเวลารับงานเพิ่ม"}, {"t": "แสดงความเห็นอย่างนุ่มนวล", "sc": null, "b": "Correct me if I am wrong ใช้นำหน้าความเห็นที่อาจขัดแย้ง ทำให้ฟังดูเปิดรับ ไม่ก้าวร้าว แต่ยังสื่อสารได้ชัดเจนและตรงประเด็น", "eg": "Correct me if I am wrong, but I think the deadline was moved to Friday, not Thursday.", "tk": "Correct me if I am wrong = พูดความเห็นโดยไม่ดูก้าวร้าว", "q": "ประโยคใดใช้นำความเห็นที่อาจขัดแย้งได้ดีที่สุด?", "o": ["You are wrong about this.", "I disagree completely.", "Correct me if I am wrong, but...", "That is a bad idea."], "a": 2, "c": "ถูกต้อง! Correct me if I am wrong ทำให้ฟังดูนุ่มนวลแต่สื่อสารได้ตรง", "w": "คำตอบถูกคือ Correct me if I am wrong, but..."}, {"t": "Touch base คืออะไร?", "sc": null, "b": "Let us touch base = ขอนัดคุยสั้นๆ เพื่ออัปเดตสถานการณ์กัน ใช้ได้ทั้งทาง email โทรศัพท์ หรือนัดเจอตัว เป็น phrase ที่ฟังดู casual แต่เป็นมืออาชีพ", "eg": "Can we touch base this afternoon to sync on the project status? = ขอคุยสั้นๆ บ่ายนี้เพื่ออัปเดตโปรเจกต์", "tk": "Touch base = นัดคุยสั้นๆ เพื่ออัปเดตกัน ใช้แทน ขอนัดประชุม", "q": "Let us touch base หมายความว่าอะไร?", "o": ["มาเล่นกีฬาด้วยกัน", "นัดคุยสั้นๆ เพื่ออัปเดตสถานการณ์", "เซ็นสัญญาร่วมกัน", "ตรวจสอบตัวเลขด้วยกัน"], "a": 1, "c": "ถูก! Touch base = นัดคุยสั้นๆ เพื่ออัปเดต ใช้บ่อยมากในออฟฟิศ", "w": "คำตอบถูกคือ นัดคุยสั้นๆ เพื่ออัปเดตสถานการณ์"}, {"t": "Move the needle คืออะไร?", "sc": null, "b": "Move the needle หมายถึงทำให้เกิดความเปลี่ยนแปลงที่วัดได้จริง ไม่ใช่แค่งานที่ดูยุ่ง แต่ไม่ได้ผลลัพธ์ที่ชัดเจน มักใช้ในบริบทของผลลัพธ์ทางธุรกิจ", "eg": "We need campaigns that actually move the needle on revenue, not just increase brand awareness.", "tk": "Move the needle = ทำให้ตัวเลขเปลี่ยน = งานที่วัดผลได้จริง", "q": "This campaign did not move the needle. หมายความว่าอะไร?", "o": ["แคมเปญสำเร็จมาก", "แคมเปญไม่ได้ทำให้ผลลัพธ์เปลี่ยนแปลง", "แคมเปญมีงบเกิน", "แคมเปญยังไม่เสร็จ"], "a": 1, "c": "ถูก! Did not move the needle = ไม่ได้ทำให้ตัวเลขเปลี่ยน", "w": "คำตอบถูกคือ แคมเปญไม่ได้ทำให้ผลลัพธ์เปลี่ยนแปลง"}, {"t": "Bandwidth คืออะไร?", "sc": null, "b": "ในออฟฟิศ bandwidth ไม่ได้หมายถึงอินเทอร์เน็ต แต่หมายถึงความสามารถหรือเวลาที่มีในการรับงานเพิ่ม ใช้ถามว่าคนนั้นว่างพอไหม", "eg": "Do you have the bandwidth to take on this project? = คุณมีเวลาและพลังงานพอรับโปรเจกต์นี้ไหม?", "tk": "Do you have the bandwidth? = คุณว่างพอรับงานนี้ไหม?", "q": "I do not have the bandwidth for this right now. หมายความว่าอะไร?", "o": ["อินเทอร์เน็ตไม่พอ", "ฉันไม่มีเวลาหรือพลังงานรับงานนี้ตอนนี้", "ฉันไม่เข้าใจงานนี้", "ฉันต้องขออนุมัติก่อน"], "a": 1, "c": "ถูก! Bandwidth ในออฟฟิศ = ความพร้อมและเวลาในการรับงานเพิ่ม", "w": "คำตอบถูกคือ ไม่มีเวลาหรือพลังงานรับงานนี้"}, {"t": "Take this offline คืออะไร?", "sc": null, "b": "Let us take this offline = คุยกันนอกรอบประชุมดีกว่า ใช้เมื่อ topic นั้นละเอียดเกินไปหรือไม่เกี่ยวกับทุกคนในห้อง แทนที่จะเสียเวลาทุกคนในประชุม", "eg": "ในประชุม 10 คน มีคนเริ่มเถียงกัน 2 คน → Let us take this offline and reconnect after the meeting.", "tk": "Take this offline = คุยนอกรอบ ไม่ใช้เวลาประชุมทุกคน", "q": "Let us take this offline. หมายความว่าอะไร?", "o": ["ปิด wifi ก่อนประชุม", "คุยกันนอกรอบหลังประชุม", "ยกเลิกประชุมนี้", "ส่ง email แทนการประชุม"], "a": 1, "c": "ถูก! Take offline = คุยนอกรอบ ช่วยให้ประชุมไม่ยาวและตรงประเด็น", "w": "คำตอบถูกคือ คุยกันนอกรอบหลังประชุม"}], "psych": [{"t": "Anchoring: ใครตั้งราคาแรก คนนั้นชนะ", "sc": null, "b": "ตัวเลขแรกที่ได้ยิน (Anchor) จะฝังในหัวและทำให้ตัวเลขถัดไปถูกเปรียบเทียบกับมัน ใช้ได้กับการเจรจาราคา เงินเดือน และทุกอย่างที่มีตัวเลข", "eg": "ขอเงินเดือน 45,000 → HR เสนอ 38,000 → คุณต่อเหลือ 42,000 / เทียบกับถ้าเสนอ 40,000 แรก ผลต่างชัดมาก", "tk": "ตั้ง Anchor สูงก่อนเสมอ คนอื่นจะเจรจาจากตัวเลขของคุณ", "q": "Anchoring Effect คืออะไร?", "o": ["การโน้มน้าวด้วยความกลัว", "ผลที่ตัวเลขแรกมีต่อการตัดสินใจถัดไป", "การสร้างความไว้วางใจก่อนขาย", "การให้ของแถมเพื่อปิดดีล"], "a": 1, "c": "ถูก! Anchor คือตัวเลขแรกที่ฝังในหัวคู่เจรจา ทำให้ทุกอย่างวัดจากจุดนั้น", "w": "คำตอบถูกคือ ผลที่ตัวเลขแรกมีต่อการตัดสินใจ"}, {"t": "Door-in-the-Face: ขอมากก่อน แล้วลดลงมา", "sc": null, "b": "ขอสิ่งที่ใหญ่มากก่อน (ที่รู้ว่าจะโดนปฏิเสธ) แล้วลดลงมาขอสิ่งที่ต้องการจริงๆ คนอีกฝั่งจะรู้สึกว่าคุณยอมลดลงมา และมักยอมรับ request ที่เล็กกว่า", "eg": "ขอเพิ่มงบ 200,000 บาท → โดนปฏิเสธ → ขอแค่ 60,000 → ได้รับการอนุมัติ", "tk": "เสนอ request ใหญ่ก่อน แล้วลดลงมาขอจริง คนอื่นจะรู้สึกว่าคุณยอม", "q": "Door-in-the-Face technique ทำงานอย่างไร?", "o": ["ขอเล็กก่อน แล้วค่อยขอใหญ่", "ขอใหญ่ก่อน แล้วลดลงมาขอเล็ก", "ปฏิเสธทุกอย่างก่อน แล้วค่อยยอม", "ยอมรับทุกอย่างเพื่อสร้างความสัมพันธ์"], "a": 1, "c": "ถูก! ขอใหญ่ก่อน → โดนปฏิเสธ → ขอเล็กลงมา → คนอื่นรู้สึกว่าคุณยอมแล้ว", "w": "คำตอบถูกคือ ขอใหญ่ก่อน แล้วลดลงมา"}, {"t": "Social Proof: ทุกคนทำ ฉันก็ทำ", "sc": null, "b": "คนเรามักตัดสินใจโดยดูว่าคนอื่นทำอะไร ถ้าสิ่งนั้นได้รับความนิยม เราจะรู้สึกว่ามันต้องดี ใช้หลักนี้เพื่อทำให้คนอื่นเห็นด้วยกับความคิดเรา", "eg": "ทีม Engineering ทุกทีมในบริษัทใช้ tool นี้แล้ว เราเป็นทีมเดียวที่ยังไม่ใช้ → คนฟังรู้สึกกดดัน", "tk": "บอกว่าคนอื่นทำแล้วได้ผล Social Proof ทำให้คนยอมรับง่ายขึ้น", "q": "Social Proof คืออะไร?", "o": ["การใช้ข้อมูลสถิติ", "การอ้างว่าคนอื่นทำหรือใช้แล้วได้ผล", "การให้ทดลองใช้ก่อนตัดสินใจ", "การสร้างความเร่งด่วน"], "a": 1, "c": "ถูก! Social Proof = อ้างว่าคนอื่นทำแล้ว ทำให้คนอยากทำตาม", "w": "คำตอบถูกคือ อ้างว่าคนอื่นทำแล้วได้ผล"}, {"t": "Reciprocity: ให้ก่อน แล้วขอทีหลัง", "sc": null, "b": "คนรู้สึกผูกพันที่จะตอบแทนเมื่อได้รับอะไรบางอย่าง แม้เป็นของเล็กน้อย การให้ก่อนสร้างความรู้สึกติดหนี้บุญคุณที่ทำให้อีกฝ่ายอยากช่วยเรา", "eg": "ช่วยเพื่อนร่วมงานแก้ปัญหาก่อน → เวลาขอความช่วยเหลือ → เขามักยินดีช่วยทันที", "tk": "ให้ก่อนโดยไม่หวัง Reciprocity ทำให้คนอยากตอบแทนเสมอ", "q": "Reciprocity principle ในจิตวิทยาคืออะไร?", "o": ["ยิ่งขอมาก ยิ่งได้น้อย", "คนรู้สึกอยากตอบแทนเมื่อได้รับสิ่งใดมา", "การทำซ้ำจนเป็นนิสัย", "การตัดสินใจโดยใช้เหตุผล"], "a": 1, "c": "ถูกต้อง! Reciprocity = ได้รับแล้วรู้สึกอยากตอบแทน", "w": "คำตอบถูกคือ อยากตอบแทนเมื่อได้รับ"}, {"t": "Sunk Cost Fallacy: อย่าตัดสินจากสิ่งที่เสียไปแล้ว", "sc": null, "b": "Sunk Cost คือต้นทุนที่จ่ายไปแล้วและเอาคืนไม่ได้ คนมักตัดสินใจผิดพลาดโดยยึดถือสิ่งที่เสียไปแล้ว แทนที่จะมองผลลัพธ์ในอนาคต", "eg": "เสียเงินซื้อตั๋วหนัง 300 บาท → ดูไปสักพักแล้วรู้ว่าห่วยมาก → แต่ยังนั่งดูจนจบเพราะเสียเงินไปแล้ว → นั่นคือ Sunk Cost Fallacy", "tk": "ตัดสินใจจากอนาคต ไม่ใช่จากสิ่งที่เสียไปแล้ว", "q": "Sunk Cost Fallacy คืออะไร?", "o": ["การลงทุนในสิ่งที่แน่ใจ", "การยึดถือต้นทุนที่เสียไปแล้วในการตัดสินใจ", "การคิดต้นทุนก่อนตัดสินใจ", "การหลีกเลี่ยงการลงทุน"], "a": 1, "c": "ถูก! Sunk Cost Fallacy คือการตัดสินใจโดยยึดถือสิ่งที่เสียไปแล้ว แทนที่จะมองอนาคต", "w": "คำตอบถูกคือ การยึดถือต้นทุนที่เสียไปแล้ว"}, {"t": "Confirmation Bias: เราเชื่อสิ่งที่อยากเชื่อ", "sc": null, "b": "คนเรามักค้นหาและให้น้ำหนักกับข้อมูลที่ยืนยันสิ่งที่คิดอยู่แล้ว และมองข้ามข้อมูลที่ขัดแย้ง Confirmation Bias ทำให้ตัดสินใจผิดพลาดโดยไม่รู้ตัว", "eg": "เชื่อว่าโปรดักต์นี้ดี → แล้วก็หาแต่รีวิวดีๆ มาสนับสนุน → มองข้ามรีวิวแย่ → นั่นคือ Confirmation Bias", "tk": "ระวัง Confirmation Bias ด้วยการหาข้อมูลที่ขัดแย้งกับความคิดของตัวเองตั้งใจ", "q": "Confirmation Bias คืออะไร?", "o": ["การเชื่อข้อมูลที่ยืนยันความคิดที่มีอยู่แล้ว", "การยืนยันตัวตนผ่านโซเชียล", "การเปลี่ยนใจตามคนส่วนใหญ่", "การตัดสินใจโดยใช้ตรรกะ"], "a": 0, "c": "ถูก! Confirmation Bias = เชื่อข้อมูลที่ยืนยันสิ่งที่คิดอยู่แล้ว มองข้ามสิ่งที่ขัดแย้ง", "w": "คำตอบถูกคือ การเชื่อข้อมูลที่ยืนยันความคิดที่มีอยู่แล้ว"}, {"t": "Loss Aversion: เจ็บปวดจากการสูญเสียมากกว่าความสุขจากการได้", "sc": null, "b": "จิตวิทยาพบว่าความเจ็บปวดจากการสูญเสีย 100 บาทรู้สึกหนักกว่าความสุขจากการได้ 100 บาทถึง 2 เท่า นี่คือเหตุผลที่คนกลัวการเสียมากกว่าการไม่ได้", "eg": "ประกาศลด 20% vs ราคาเต็มถ้าไม่ซื้อวันนี้จะเสีย 20% → อันหลังกระตุ้นการซื้อได้ดีกว่า เพราะ activate Loss Aversion", "tk": "เน้น สิ่งที่จะสูญเสีย แทน สิ่งที่จะได้ ในการโน้มน้าว ได้ผลมากกว่า", "q": "Loss Aversion หมายความว่าอะไร?", "o": ["คนกลัวการลงทุน", "ความเจ็บปวดจากการสูญเสียรู้สึกหนักกว่าความสุขจากการได้รับ", "คนชอบของฟรีมากกว่าของมีราคา", "การหลีกเลี่ยงความเสี่ยงทุกรูปแบบ"], "a": 1, "c": "ถูก! Loss Aversion คือเหตุผลที่คนกลัวการเสียมากกว่าอยากได้", "w": "คำตอบถูกคือ ความเจ็บปวดจากการสูญเสียรู้สึกหนักกว่าความสุขจากการได้รับ"}, {"t": "Framing Effect: วิธีพูดเปลี่ยนการตัดสินใจ", "sc": null, "b": "ข้อมูลเดียวกัน แต่วิธีนำเสนอต่างกัน ทำให้คนตัดสินใจต่างกัน นี่คือ Framing Effect การเลือก frame ที่ถูกต้องเป็นทักษะสำคัญในการโน้มน้าว", "eg": "ผ่าตัดแล้วมีโอกาสรอด 90% vs ผ่าตัดแล้วมีโอกาสเสียชีวิต 10% → ข้อมูลเดียวกัน แต่คนตัดสินใจต่างกัน", "tk": "เลือก frame ที่เน้นผลดีหรือสิ่งที่จะได้ เพื่อโน้มน้าวได้ดีกว่า", "q": "Framing Effect คืออะไร?", "o": ["การใส่กรอบรูปภาพ", "วิธีนำเสนอข้อมูลมีผลต่อการตัดสินใจ แม้ข้อมูลเดียวกัน", "การเลือกคำศัพท์ทางเทคนิค", "การใช้สถิติในการโน้มน้าว"], "a": 1, "c": "ถูก! Framing Effect = วิธีพูดเรื่องเดียวกันต่างกัน ทำให้คนตัดสินใจต่างกัน", "w": "คำตอบถูกคือ วิธีนำเสนอข้อมูลมีผลต่อการตัดสินใจ"}], "meta": [{"t": "Feynman Technique: อธิบายได้ = เข้าใจจริง", "sc": null, "b": "วิธีรู้ว่าตัวเองเข้าใจอะไรจริงๆ คือ อธิบายสิ่งนั้นให้เด็ก 12 ขวบฟังรู้เรื่อง ถ้าอธิบายไม่ได้หรือต้องใช้ศัพท์เฉพาะ แสดงว่าเรายังไม่เข้าใจจริง ต้องกลับไปอ่านใหม่", "eg": "เข้าใจ Machine Learning? → ลองอธิบาย: คอมเรียนรู้จากตัวอย่างเยอะๆ เหมือนเด็กจำรูปวัวจากการเห็นหลายร้อยครั้ง", "tk": "ถ้าอธิบายง่ายๆ ให้คนอื่นไม่ได้ = ยังไม่เข้าใจจริง กลับไปอ่านอีกครั้ง", "q": "Feynman Technique ช่วยอะไร?", "o": ["จำข้อมูลได้เร็วขึ้น", "ตรวจสอบว่าเข้าใจจริงหรือแค่คิดว่าเข้าใจ", "เพิ่มความเร็วในการอ่าน", "สรุปข้อมูลให้สั้นลง"], "a": 1, "c": "ถูก! Feynman ช่วยแยกระหว่าง เข้าใจจริง กับ คิดว่าเข้าใจ ซึ่งต่างกันมาก", "w": "คำตอบถูกคือ ตรวจสอบว่าเข้าใจจริง"}, {"t": "Active Recall: ทดสอบตัวเองให้บ่อยขึ้น", "sc": null, "b": "การอ่านซ้ำให้ความรู้สึกว่ากำลังเรียนอยู่ แต่ไม่ได้ช่วยให้จำได้ การปิดหนังสือแล้วพยายามนึกสิ่งที่เพิ่งอ่านออกมาเอง (Active Recall) ได้ผลดีกว่า 2-3 เท่า", "eg": "อ่านบทความ → ปิด → เขียนสิ่งที่จำได้ลงกระดาษ → เปิดดูว่าพลาดอะไร → นั่นคือสิ่งที่ต้องทบทวน", "tk": "หลังอ่านจบ ปิดแล้วถามตัวเองว่า จำอะไรได้บ้าง? ทุกครั้ง", "q": "ทำไม Active Recall ถึงดีกว่าการอ่านซ้ำ?", "o": ["ใช้เวลาน้อยกว่า", "บังคับให้สมองดึงข้อมูลออกมา ซึ่งเสริมความจำ", "ทำให้อ่านเร็วขึ้น", "ลดความเครียดในการเรียน"], "a": 1, "c": "ถูก! การดึงข้อมูลออกมา (retrieval) เสริมความจำดีกว่าการอ่านซ้ำมาก", "w": "คำตอบถูกคือ บังคับให้สมองดึงข้อมูลออกมา"}, {"t": "Pomodoro: สมองต้องการ deadline เล็กๆ", "sc": null, "b": "โฟกัส 25 นาที → พัก 5 นาที → ทำซ้ำ 4 รอบ → พักยาว 15 นาที การตั้ง deadline สั้นๆ บังคับให้สมองเข้าโหมดทำงาน และลด procrastination ได้ดีมาก", "eg": "แทนที่คิด ต้องเขียนรายงาน → คิดว่า ฉันจะเขียนแค่ 25 นาที แล้วพัก → เริ่มได้ง่ายขึ้นมาก", "tk": "25 นาทีโฟกัส 5 นาทีพัก ทำซ้ำ ไม่มีอะไรซับซ้อนกว่านี้", "q": "Pomodoro Technique แก้ปัญหาอะไรได้ดีที่สุด?", "o": ["จำข้อมูลได้นานขึ้น", "อ่านหนังสือเร็วขึ้น", "ภาวะเริ่มงานไม่ได้และ procrastination", "การทำงานหลายอย่างพร้อมกัน"], "a": 2, "c": "ถูก! Pomodoro แก้ปัญหาการเริ่มงานไม่ได้ได้ดีมาก เพราะ 25 นาทีดูไม่น่ากลัว", "w": "คำตอบถูกคือ ภาวะเริ่มงานไม่ได้"}, {"t": "Spaced Repetition: ทบทวนถูกจังหวะ จำได้นาน", "sc": null, "b": "สมองลืมข้อมูลตาม Forgetting Curve การทบทวนก่อนลืมพอดีช่วยให้จำได้นานขึ้นทุกครั้ง interval ที่เหมาะ: วันที่ 1 → 3 → 7 → 14 → 30", "eg": "เรียนคำศัพท์วันนี้ → ทบทวนพรุ่งนี้ → อีก 3 วัน → อีก 7 วัน → จำได้นานหลายเดือน", "tk": "ทบทวน 5 นาทีหลังเรียนจบ ดีกว่าอ่านซ้ำ 1 ชั่วโมงอาทิตย์หน้า", "q": "Spaced Repetition ต่างจากการอ่านซ้ำอย่างไร?", "o": ["อ่านเร็วกว่า", "ทบทวนในจังหวะที่ห่างขึ้นเรื่อยๆ ตาม pattern การลืม", "ใช้ flash card เสมอ", "ต้องใช้แอปพลิเคชัน"], "a": 1, "c": "ถูก! Spaced Repetition ทบทวนในจังหวะที่เหมาะกับ Forgetting Curve ของสมอง", "w": "คำตอบถูกคือ ทบทวนในจังหวะที่ห่างขึ้นเรื่อยๆ"}, {"t": "Second Brain: จดโน้ตให้เป็นระบบ", "sc": null, "b": "Second Brain คือระบบจัดเก็บความรู้ภายนอกหัว เก็บทุก idea บทความ insight ไว้ในที่เดียวและจัดหมวดหมู่ให้หาได้ง่าย แทนที่จะพึ่งความจำล้วนๆ", "eg": "อ่านบทความดี → จดใน Notion/Obsidian/Notes ว่า เรื่องอะไร ใช้ที่ไหนได้บ้าง → ถึงเวลาต้องการ ค้นหาได้ทันที", "tk": "จดทุก idea และ insight ลงในที่เดียวทันที อย่าพึ่งแค่ความจำ", "q": "Second Brain ช่วยอะไร?", "o": ["เพิ่มความจำระยะสั้น", "จัดเก็บความรู้นอกหัวให้ค้นหาได้ง่าย", "เรียนได้เร็วขึ้น", "ลดการใช้โทรศัพท์"], "a": 1, "c": "ถูก! Second Brain = ระบบจัดเก็บความรู้ภายนอกหัว ทำให้ไม่มีวันลืม", "w": "คำตอบถูกคือ จัดเก็บความรู้นอกหัวให้ค้นหาได้ง่าย"}, {"t": "Deep Work vs Shallow Work", "sc": null, "b": "Deep Work คืองานที่ต้องใช้สมองเต็มที่ สร้างคุณค่าสูง / Shallow Work คืองานกิจธุระ ตอบ email ประชุมทั่วไป คนส่วนใหญ่ใช้เวลากับ Shallow Work มากเกินไปจนไม่มีเวลา Deep Work", "eg": "ลองดูตารางเวลาของตัวเอง ถ้างานคิดจริงๆ น้อยกว่า 2 ชั่วโมงต่อวัน นั่นคือปัญหา", "tk": "จองเวลา Deep Work ในปฏิทินเหมือนประชุม ให้ไม่มีใครขอเวลานั้นได้", "q": "Deep Work ต่างจาก Shallow Work อย่างไร?", "o": ["Deep Work ใช้เวลานานกว่า", "Deep Work ต้องการสมาธิสูงและสร้างคุณค่ามาก", "Shallow Work ยากกว่า", "Deep Work ทำได้แค่ตอนเช้า"], "a": 1, "c": "ถูก! Deep Work = งานที่ต้องใช้สมองเต็มที่ สร้างคุณค่าสูงมาก", "w": "คำตอบถูกคือ Deep Work ต้องการสมาธิสูงและสร้างคุณค่ามาก"}, {"t": "Pareto 80/20: ผล 80% มาจาก 20% ของ action", "sc": null, "b": "กฎ Pareto บอกว่า 80% ของผลลัพธ์มาจาก 20% ของ input หรือ action ใช้หลักนี้เพื่อหาว่า 20% ของงานไหนสร้าง impact มากที่สุด แล้วโฟกัสที่นั่น", "eg": "ลูกค้า 20% สร้างรายได้ 80% → โฟกัสดูแลลูกค้า 20% นั้นให้ดี / task 20% สำคัญที่สุด → ทำก่อนเสมอ", "tk": "ถามทุกวัน: 20% ของงานวันนี้ที่สร้าง impact มากที่สุดคืออะไร? แล้วทำก่อน", "q": "กฎ Pareto 80/20 หมายความว่าอะไร?", "o": ["ทำงาน 80% ของเวลา พัก 20%", "80% ของผลลัพธ์มาจาก 20% ของความพยายาม", "ให้เวลา 80% กับงานสำคัญ", "ลดงาน 20% เพื่อเพิ่มผล 80%"], "a": 1, "c": "ถูก! 80/20 หมายถึง impact ส่วนใหญ่มาจาก input เพียงส่วนน้อย", "w": "คำตอบถูกคือ 80% ของผลลัพธ์มาจาก 20% ของความพยายาม"}, {"t": "First Principles: คิดจากพื้นฐานที่สุด", "sc": null, "b": "First Principles Thinking คือการแยกสิ่งที่สมมติว่าจริงออกจากสิ่งที่จริงจริง แล้วสร้างความเข้าใจใหม่จากศูนย์ แทนที่จะทำตาม convention เพราะทุกคนทำแบบนี้", "eg": "Elon Musk ถาม แบตเตอรีแพงเพราะอะไร? → แยก component ทีละอย่าง → พบว่าวัตถุดิบไม่แพงมาก → ผลิตเองจะถูกกว่ามาก", "tk": "ถามว่า ทำไมต้องทำแบบนี้? ถ้าตอบได้แค่ เพราะทุกคนทำ นั่นยังไม่ใช่ answer", "q": "First Principles Thinking คืออะไร?", "o": ["ทำตาม best practice ของอุตสาหกรรม", "คิดจากสมมติฐานพื้นฐานที่สุด ไม่ยึดถือ convention", "เรียนรู้จากผู้เชี่ยวชาญก่อน", "วางแผนระยะยาวก่อนลงมือ"], "a": 1, "c": "ถูก! First Principles = คิดจากความจริงพื้นฐาน ไม่ใช่จาก ทุกคนทำแบบนี้", "w": "คำตอบถูกคือ คิดจากสมมติฐานพื้นฐานที่สุด ไม่ยึดถือ convention"}], "soft": [{"t": "Active Listening: ฟังเพื่อเข้าใจ ไม่ใช่เพื่อตอบ", "sc": null, "b": "คนส่วนใหญ่ฟังโดยคิดหาคำตอบไปพร้อมกัน ทำให้พลาดสิ่งที่อีกฝ่ายพูดจริงๆ Active Listening คือ ฟังจนจบ → สรุปสิ่งที่ได้ยิน → ถามคำถามเปิด → ค่อยตอบ", "eg": "เพื่อนบ่นเรื่องงาน → ฉันได้ยินว่าคุณรู้สึกกดดันเรื่องดีลนี้มาก อะไรที่ทำให้กังวลที่สุด? แทนการรีบให้คำแนะนำ", "tk": "หลังฟังจบ สรุปสิ่งที่ได้ยินก่อนพูดความเห็นเสมอ", "q": "Active Listening หมายถึงอะไร?", "o": ["ฟังให้เร็วขึ้น", "จดบันทึกทุกอย่างที่ได้ยิน", "ฟังอย่างตั้งใจเพื่อเข้าใจ ไม่ใช่รอตอบ", "ฟังเพลงขณะทำงาน"], "a": 2, "c": "ถูก! Active Listening = ฟังเพื่อเข้าใจ ไม่ใช่รอคิวพูด ทำให้ความสัมพันธ์ดีขึ้นมาก", "w": "คำตอบถูกคือ ฟังอย่างตั้งใจเพื่อเข้าใจ"}, {"t": "Feedback Sandwich: วิจารณ์ให้คนอยากปรับปรุง", "sc": null, "b": "โครงสร้าง ชม → วิจารณ์ → ชม ทำให้ feedback ถูกรับได้ง่ายขึ้น เพราะสมองรู้สึกปลอดภัยก่อนจะได้ยินสิ่งที่ต้องแก้ไข ใช้ได้กับทุก feedback ไม่ว่าเล็กหรือใหญ่", "eg": "งาน design นี้สวยมาก โดยเฉพาะ color scheme / แต่ขนาดตัวอักษรอ่านยากบนมือถือ / โดยรวมทิศทางดีมาก แก้แค่นี้ก็สมบูรณ์", "tk": "ชม → สิ่งที่ควรปรับ → ชม ลองใช้ครั้งหน้าที่ให้ feedback", "q": "Feedback Sandwich มีโครงสร้างอย่างไร?", "o": ["วิจารณ์ → ชม → วิจารณ์", "ชม → วิจารณ์ → ชม", "ถาม → วิจารณ์ → แนะนำ", "อธิบาย → แนะนำ → สรุป"], "a": 1, "c": "ถูก! ชม → วิจารณ์ → ชม ทำให้อีกฝ่ายรับ feedback ได้โดยไม่รู้สึกโดนโจมตี", "w": "คำตอบถูกคือ ชม → วิจารณ์ → ชม"}, {"t": "I-Statement: พูดว่าฉันรู้สึก แทน คุณทำให้", "sc": null, "b": "คุณทำให้ฉันหงุดหนิด ทำให้อีกฝ่ายรับตัวป้องกัน แต่ ฉันรู้สึกเครียดเมื่อรายงานส่งช้ากว่ากำหนด สื่อความรู้สึกโดยไม่ attack สูตร: ฉันรู้สึก [อารมณ์] เมื่อ [เหตุการณ์]", "eg": "แทน คุณไม่เคยฟังฉัน → ฉันรู้สึกไม่ได้รับฟังเวลาที่ความคิดเห็นของฉันไม่ได้รับการตอบสนอง", "tk": "ฉันรู้สึก [อารมณ์] เมื่อ [เหตุการณ์] แทนการโทษอีกฝ่าย", "q": "ทำไม I-Statement ถึงได้ผลดีกว่าการโทษอีกฝ่าย?", "o": ["ทำให้ฟังดูสุภาพกว่า", "ไม่ทำให้อีกฝ่ายรู้สึกโดนโจมตี จึงรับฟังได้ดีกว่า", "ใช้คำน้อยกว่า", "ทำให้ดูอ่อนแอ"], "a": 1, "c": "ถูก! I-Statement ไม่ trigger กลไกการป้องกันตัว อีกฝ่ายจึงรับฟังได้จริง", "w": "คำตอบถูกคือ ไม่ทำให้รู้สึกโดนโจมตี"}, {"t": "Growth Mindset: ยัง เปลี่ยนทุกอย่าง", "sc": null, "b": "Fixed Mindset: ฉันไม่เก่งคณิตศาสตร์ → หยุดพยายาม / Growth Mindset: ฉันยังไม่เก่งคณิตศาสตร์ → ยังมีโอกาสพัฒนา คำว่า ยัง เดียวเปลี่ยน perspective ได้มาก", "eg": "เจอโปรเจกต์ยาก → Fixed: ไม่ใช่สายฉัน / Growth: ฉันยังไม่มีประสบการณ์แบบนี้ แต่เรียนได้", "tk": "เพิ่ม ยัง เข้าไปทุกครั้งที่บอกว่าตัวเองทำอะไรไม่ได้", "q": "Growth Mindset ต่างจาก Fixed Mindset อย่างไร?", "o": ["เชื่อว่าคนอื่นพัฒนาได้ แต่ตัวเองไม่ได้", "เชื่อว่าทักษะพัฒนาได้ด้วยความพยายาม", "ให้ความสำคัญกับผลลัพธ์มากกว่ากระบวนการ", "ไม่สนใจความคิดเห็นของคนอื่น"], "a": 1, "c": "ถูก! Growth Mindset เชื่อว่าทุกอย่างพัฒนาได้ ทำให้กล้าลองสิ่งใหม่มากขึ้น", "w": "คำตอบถูกคือ เชื่อว่าทักษะพัฒนาได้"}, {"t": "Radical Candor: ตรงไปตรงมา แต่ใส่ใจ", "sc": null, "b": "Radical Candor คือการให้ feedback ที่ตรงไปตรงมา แต่มาจากความใส่ใจจริงๆ ไม่ใช่การวิจารณ์เพื่อทำลาย ต่างจาก Ruinous Empathy (ไม่กล้าบอกความจริง) และ Obnoxious Aggression (วิจารณ์โดยไม่ใส่ใจ)", "eg": "แทนที่จะบอกว่า งานดีมาก ทั้งที่รู้ว่ายังมีจุดบกพร่อง → บอกว่า งานนี้ตรรกะดีมาก แต่ data ส่วน 3 ยังไม่ support argument ได้ ลองเพิ่มส่วนนี้ดู", "tk": "ให้ feedback ตรงๆ เพราะอยากให้อีกฝ่ายดีขึ้น ไม่ใช่เพราะอยากพูด", "q": "Radical Candor คืออะไร?", "o": ["การวิจารณ์อย่างรุนแรงเพื่อกระตุ้น", "การให้ feedback ตรงไปตรงมาจากความใส่ใจ", "การไม่พูดความจริงเพื่อรักษาความสัมพันธ์", "การยกย่องมากเกินจริง"], "a": 1, "c": "ถูก! Radical Candor = ตรงไปตรงมา + ใส่ใจ ทั้งสองต้องมาพร้อมกัน", "w": "คำตอบถูกคือ การให้ feedback ตรงไปตรงมาจากความใส่ใจ"}, {"t": "Disagree and Commit: ไม่เห็นด้วยแต่ทำด้วยกัน", "sc": null, "b": "ในทีม ไม่ใช่ทุกครั้งที่ความเห็นจะตรงกัน แต่เมื่อตัดสินใจแล้ว ทุกคนต้อง commit และทำด้วยกันอย่างเต็มที่ แม้จะไม่เห็นด้วย 100%", "eg": "ไม่เห็นด้วยกับทิศทาง product → พูดความเห็นในประชุม → ทีมตัดสินใจแล้ว → ทำด้วยกันอย่างเต็มที่ ไม่บ่นภายหลัง", "tk": "พูดความเห็นก่อนตัดสินใจ แต่เมื่อตัดสินใจแล้ว commit เต็ม 100%", "q": "Disagree and Commit หมายความว่าอะไร?", "o": ["ไม่เห็นด้วยและทำตามโดยไม่พอใจ", "แสดงความเห็นก่อน แต่เมื่อตัดสินใจแล้วทำด้วยกันเต็มที่", "ปฏิเสธทุก decision ที่ไม่เห็นด้วย", "ยอมตามทุกอย่างเพื่อให้ทีมสงบ"], "a": 1, "c": "ถูก! Disagree and Commit = พูดก่อน แต่เมื่อตัดสินใจแล้ว ทำด้วยกัน 100%", "w": "คำตอบถูกคือ แสดงความเห็นก่อน แต่เมื่อตัดสินใจแล้วทำด้วยกันเต็มที่"}, {"t": "Managing Up: ทำให้เจ้านายทำงานง่ายขึ้น", "sc": null, "b": "Managing Up คือการทำให้เจ้านายทำงานร่วมกับเราได้ง่ายขึ้น โดยการ สื่อสารชัดเจน อัปเดตก่อนถูกถาม เสนอ solution แทนแค่ปัญหา ทำให้เราดูเป็นคนที่ไว้วางใจได้", "eg": "แทนที่บอกว่า มีปัญหา → บอกว่า มีปัญหา X ฉันคิดว่าทางออกที่ดีที่สุดคือ Y เพราะ Z อยากให้อนุมัติได้ไหม?", "tk": "อัปเดตก่อนถูกถาม เสนอ solution แทนปัญหา ทำให้เจ้านายทำงานง่ายขึ้น", "q": "Managing Up หมายความว่าอะไร?", "o": ["การบ่นเจ้านายกับเพื่อนร่วมงาน", "การทำให้การทำงานร่วมกับเจ้านายราบรื่นขึ้น", "การขอเลื่อนตำแหน่งบ่อยๆ", "การหลีกเลี่ยงการพบเจ้านาย"], "a": 1, "c": "ถูก! Managing Up = ทำให้เจ้านายทำงานง่ายขึ้น ด้วยการสื่อสารดีและเสนอ solution", "w": "คำตอบถูกคือ การทำให้การทำงานร่วมกับเจ้านายราบรื่นขึ้น"}, {"t": "The Power of Pause: หยุดก่อนตอบ", "sc": null, "b": "เวลาได้ยินอะไรที่ทำให้อยากตอบโต้ทันที ให้หยุดหายใจ 2-3 วินาทีก่อน การ pause นี้ให้สมองส่วนหน้า (rational brain) กลับมาควบคุมแทนอารมณ์ ทำให้ตอบได้ดีกว่ามาก", "eg": "ในประชุมมีคนวิจารณ์งานอย่างแรง → แทนที่จะตอบโต้ทันที → หยุด 3 วินาที → ขอบคุณสำหรับ feedback ฉันจะพิจารณาดู → ดูเป็นมืออาชีพมาก", "tk": "ได้ยินอะไรที่อยากตอบโต้ → หายใจ → รอ 3 วินาที → แล้วค่อยพูด", "q": "ทำไม The Power of Pause ถึงช่วยได้?", "o": ["ทำให้ฟังดูฉลาดขึ้น", "ให้เวลาสมองส่วนเหตุผลกลับมาควบคุมแทนอารมณ์", "ทำให้คู่สนทนาหงุดหนิด", "เป็นกลวิธีเพื่อให้ดูสงบ"], "a": 1, "c": "ถูก! Pause ให้ rational brain กลับมาควบคุม ทำให้ตอบได้ดีกว่าตอบโต้ด้วยอารมณ์", "w": "คำตอบถูกคือ ให้เวลาสมองส่วนเหตุผลกลับมาควบคุม"}], "writing": [{"t": "BLUF: สรุปก่อน อธิบายทีหลัง", "sc": null, "b": "BLUF = Bottom Line Up Front เขียนสรุปและ action ที่ต้องการก่อนเสมอ แล้วค่อยอธิบายเหตุผลทีหลัง คนอ่านไม่ต้องอ่านจนจบเพื่อรู้ว่าคุณต้องการอะไร", "eg": "แทน ตลอด 3 เดือนที่ผ่านมา เราทดสอบ... → เริ่มด้วย ขอเสนอเพิ่มงบ Marketing 20% เพราะ ROI เพิ่ม 3 เท่า รายละเอียดดังนี้...", "tk": "บรรทัดแรกของ email = สรุปและ action ที่ต้องการ เสมอ", "q": "BLUF ย่อมาจากอะไร?", "o": ["Best Language Used First", "Bottom Line Up Front", "Brief Language Under Format", "Basic Level Understanding First"], "a": 1, "c": "ถูก! Bottom Line Up Front = เอาประเด็นหลักขึ้นก่อน ทำให้ email อ่านง่ายขึ้นมาก", "w": "คำตอบถูกคือ Bottom Line Up Front"}, {"t": "Inverted Pyramid: ข้อมูลสำคัญขึ้นก่อน", "sc": null, "b": "โครงสร้างการเขียนที่ดี: ข้อมูลสำคัญที่สุด → สำคัญรองลงมา → รายละเอียดเสริม คนที่อ่านแค่ย่อหน้าแรกยังได้รับข้อความหลัก ตรงข้ามกับการเล่าเรื่องแบบ narrative", "eg": "ข่าวดี: เริ่มด้วย บริษัทเติบโต 40% ในไตรมาสนี้ แล้วค่อยอธิบาย ไม่ใช่เล่าที่มาก่อนทั้งหมด", "tk": "เริ่มด้วย อะไร → ตามด้วย ทำไม → ปิดด้วย รายละเอียด", "q": "Inverted Pyramid structure คืออะไร?", "o": ["เขียนบทสรุปท้ายสุด", "ข้อมูลที่สำคัญที่สุดอยู่บนสุด ลดหลั่นลงมา", "เริ่มด้วยเรื่องเล่าก่อน", "ใส่ตัวเลขไว้กลางบทความ"], "a": 1, "c": "ถูก! ข้อมูลสำคัญสุดอยู่บน คนอ่านยังได้ใจความแม้อ่านไม่จบ", "w": "คำตอบถูกคือ ข้อมูลที่สำคัญที่สุดอยู่บนสุด"}, {"t": "Active Voice: ประธานทำ ไม่ใช่ถูกกระทำ", "sc": null, "b": "Passive: รายงานจะถูกส่งโดยทีม / Active: ทีมจะส่งรายงาน Active voice ชัดเจน กระชับ และรู้ว่าใครทำอะไร Passive voice ซ่อนความรับผิดชอบและทำให้ประโยคยาวโดยไม่จำเป็น", "eg": "ข้อผิดพลาดถูกพบโดยระบบ → ระบบพบข้อผิดพลาด / จะมีการดำเนินการ → ฉันจะดำเนินการ", "tk": "หา ถูก ใน passive → เปลี่ยนให้ประธานทำ action เสมอ", "q": "ประโยคใดเป็น Active Voice?", "o": ["รายงานถูกเขียนโดยทีม", "ทีมเขียนรายงาน", "จะมีการส่งรายงาน", "รายงานได้รับการอนุมัติแล้ว"], "a": 1, "c": "ถูก! ทีมเขียนรายงาน คือ Active Voice ประธานทำ action ชัดเจน", "w": "คำตอบถูกคือ ทีมเขียนรายงาน"}, {"t": "Rule of Three: สามสิ่ง จำได้ง่ายที่สุด", "sc": null, "b": "สมองจำข้อมูลเป็นกลุ่ม 3 ได้ดีที่สุด มากกว่านี้ = ล้น น้อยกว่านี้ = ไม่ครบ ใช้ได้กับ bullet points เหตุผล ขั้นตอน การนำเสนอทุกประเภท", "eg": "มีสามเหตุผลที่ควรทำ: ประหยัดเวลา เพิ่มรายได้ ลดความเสี่ยง แทนการบอก 7 เหตุผล คนจำได้แค่ 3", "tk": "จำกัด bullet points ไว้ที่ 3 ข้อเสมอ ถ้ามีมากกว่า เลือก 3 ที่สำคัญที่สุด", "q": "ทำไม Rule of Three ถึงได้ผล?", "o": ["เป็นเลขมงคล", "สมองมีความสามารถในการจำกลุ่ม 3 ได้ดีที่สุด", "ทำให้ presentation ดูสั้น", "เป็น rule ของ grammar"], "a": 1, "c": "ถูก! สมองประมวลผลและจำกลุ่ม 3 ได้ดีที่สุด ลองใช้กับ presentation ถัดไป", "w": "คำตอบถูกคือ สมองจำกลุ่ม 3 ได้ดีที่สุด"}, {"t": "Hemingway Rule: ง่าย สั้น ชัด", "sc": null, "b": "Ernest Hemingway เขียนให้เข้าใจได้ง่าย หลักการ: ใช้คำง่าย ประโยคสั้น ตัดคำที่ไม่จำเป็นออก ไม่ใช้ศัพท์วิชาการโดยไม่จำเป็น คนอ่านจะเข้าใจและจำได้ดีกว่า", "eg": "โปรดพิจารณาการนำเสนอโซลูชันที่ครอบคลุมประเด็นสำคัญ → เสนอทางออกที่ครบเรื่องหลัก ดีกว่ามาก", "tk": "อ่านกลับอีกครั้ง ถ้าตัดคำไหนได้โดยความหมายไม่เปลี่ยน ตัดออก", "q": "หลักการ Hemingway Rule เน้นอะไร?", "o": ["เขียนให้ยาวและละเอียด", "ใช้คำง่าย ประโยคสั้น ตัดทุกสิ่งที่ไม่จำเป็น", "ใช้ศัพท์วิชาการเพื่อความน่าเชื่อถือ", "เขียนให้ครบทุก detail"], "a": 1, "c": "ถูก! Hemingway Rule = ง่าย สั้น ชัด ตัดทุกคำที่ไม่จำเป็นออก", "w": "คำตอบถูกคือ ใช้คำง่าย ประโยคสั้น ตัดทุกสิ่งที่ไม่จำเป็น"}, {"t": "Parallel Structure: โครงสร้างเหมือนกัน", "sc": null, "b": "เมื่อมีรายการหลายข้อ ทุกข้อควรมีโครงสร้างแบบเดียวกัน เช่น ขึ้นต้นด้วย verb หมด หรือเป็น noun phrase หมด ทำให้อ่านง่าย ไหลลื่น และดูเป็น professional", "eg": "ไม่ดี: วิเคราะห์ข้อมูล / การนำเสนอผล / ทำรายงาน | ดี: วิเคราะห์ข้อมูล / นำเสนอผล / จัดทำรายงาน", "tk": "List ทุกข้อต้องขึ้นต้นแบบเดียวกัน ตรวจก่อน submit เสมอ", "q": "Parallel Structure หมายถึงอะไร?", "o": ["ใช้ bullet point ทุกครั้ง", "รายการทุกข้อมีโครงสร้างแบบเดียวกัน", "ย่อหน้าทุกย่อหน้ายาวเท่ากัน", "เขียนสองคอลัมน์เสมอ"], "a": 1, "c": "ถูก! Parallel Structure = ทุกข้อใน list มีโครงสร้างเหมือนกัน ทำให้อ่านง่ายขึ้นมาก", "w": "คำตอบถูกคือ รายการทุกข้อมีโครงสร้างแบบเดียวกัน"}, {"t": "The 5W+H: ครบทุกมิติ", "sc": null, "b": "ก่อนเขียนหรือสื่อสาร ตรวจสอบว่าครบ 6 คำถาม: Who (ใคร) What (อะไร) When (เมื่อไหร่) Where (ที่ไหน) Why (ทำไม) How (อย่างไร) ถ้าขาดข้อไหน คนอ่านจะสงสัย", "eg": "แจ้งทีมว่า จะมีประชุมพรุ่งนี้ → Who: ทีมทุกคน / What: review Q3 / When: 10.00 / Where: ห้อง A / Why: เพื่อ align plan / How: นำ data Q3 มา", "tk": "ก่อนส่ง email หรือ message ตรวจ 5W+H ครบไหม ขาดข้อไหนต้องเติม", "q": "5W+H ย่อมาจากอะไร?", "o": ["Word Write Work Wish Will + Help", "Who What When Where Why + How", "Who Which When Where Why + Help", "What Why Work When Where + How"], "a": 1, "c": "ถูก! Who What When Where Why + How ครบทั้ง 6 ช่วยให้สื่อสารได้ชัดเจน", "w": "คำตอบถูกคือ Who What When Where Why + How"}, {"t": "Cut the Fluff: ตัดคำที่ไม่จำเป็นออก", "sc": null, "b": "Fluff คือคำที่ฟังดูดี แต่ไม่ได้เพิ่มความหมาย เช่น ตามที่กล่าวมาข้างต้น อย่างไรก็ตาม โดยสรุปแล้ว คำเหล่านี้ทำให้ข้อความยาวขึ้นโดยไม่จำเป็น", "eg": "โดยสรุปแล้ว ตามที่กล่าวมาข้างต้น การนำ tool นี้มาใช้จะช่วยให้ทีมทำงานได้ดีขึ้น → tool นี้ช่วยให้ทีมทำงานดีขึ้น ตัดได้ครึ่งหนึ่ง", "tk": "อ่านกลับ ถ้าตัดคำไหนได้โดยความหมายไม่เปลี่ยน ตัดออกทันที", "q": "Fluff ในการเขียนคืออะไร?", "o": ["ข้อมูลที่ผิดพลาด", "คำที่ฟังดูดีแต่ไม่เพิ่มความหมาย", "ประโยคที่ซับซ้อนเกินไป", "ศัพท์วิชาการ"], "a": 1, "c": "ถูก! Fluff = คำหรือประโยคที่ไม่ได้เพิ่มความหมาย ตัดออกได้เลย", "w": "คำตอบถูกคือ คำที่ฟังดูดีแต่ไม่เพิ่มความหมาย"}], "finance": [{"t": "ดอกเบี้ยทบต้น: เงินทำงานแทนคุณ", "sc": null, "b": "ดอกเบี้ยทบต้น (Compound Interest) คือดอกเบี้ยที่คำนวณจากเงินต้น + ดอกเบี้ยที่สะสมมาแล้ว ทำให้เงินเติบโตแบบทวีคูณ ยิ่งเริ่มเร็วยิ่งได้เปรียบมาก", "eg": "ลงทุน 10,000 บาท ผลตอบแทน 7% ต่อปี → 10 ปี = 19,672 บาท / 20 ปี = 38,697 บาท / 30 ปี = 76,123 บาท เพิ่มขึ้นเกือบ 8 เท่า", "tk": "เริ่มออมเงินเร็วที่สุดเท่าที่ทำได้ แม้จะน้อย เพราะเวลาคือตัวแปรที่สำคัญที่สุด", "q": "ดอกเบี้ยทบต้นต่างจากดอกเบี้ยธรรมดาอย่างไร?", "o": ["ดอกเบี้ยทบต้นคำนวณจากเงินต้นอย่างเดียว", "ดอกเบี้ยทบต้นคำนวณจากเงินต้น + ดอกเบี้ยที่สะสม ทำให้เติบโตเร็วกว่า", "ดอกเบี้ยทบต้นให้ผลตอบแทนน้อยกว่า", "ดอกเบี้ยทบต้นใช้ได้แค่กับเงินฝาก"], "a": 1, "c": "ถูก! Compound Interest ทำให้เงินโตแบบ exponential เพราะดอกเบี้ยถูกนำไปต่อยอดทุกปี", "w": "คำตอบถูกคือ คำนวณจากเงินต้น + ดอกเบี้ยที่สะสม"}, {"t": "Emergency Fund: กันชนของชีวิต", "sc": null, "b": "Emergency Fund คือเงินสำรองฉุกเฉินที่เก็บแยกออกมาต่างหาก เพื่อรับมือกับเหตุการณ์ไม่คาดคิด เช่น ตกงาน ป่วย รถเสีย แนะนำให้มี 3-6 เท่าของค่าใช้จ่ายต่อเดือน", "eg": "ค่าใช้จ่าย 20,000 บาท/เดือน → ควรมี Emergency Fund 60,000-120,000 บาท / เก็บในบัญชีออมทรัพย์แยก ไม่ลงทุน เพราะต้องใช้ได้ทันที", "tk": "เก็บ Emergency Fund ก่อนลงทุนทุกอย่าง นี่คือรากฐานของการเงินที่มั่นคง", "q": "ควรมี Emergency Fund เท่าไหร่?", "o": ["1 เท่าของเงินเดือน", "3-6 เท่าของค่าใช้จ่ายต่อเดือน", "เท่ากับหนี้ทั้งหมด", "ไม่จำเป็นต้องมีถ้าทำงานมั่นคง"], "a": 1, "c": "ถูก! 3-6 เดือนของค่าใช้จ่าย ถ้าตกงานหรือเจ็บป่วย จะมีเวลาตั้งตัวได้", "w": "คำตอบถูกคือ 3-6 เท่าของค่าใช้จ่ายต่อเดือน"}, {"t": "กฎ 50/30/20: แบ่งเงินให้เป็นระบบ", "sc": null, "b": "แบ่งเงินเดือนออกเป็น 3 ส่วน: 50% สำหรับความจำเป็น (ค่าเช่า อาหาร ค่าเดินทาง) / 30% สำหรับความต้องการ (ท่องเที่ยว ของที่อยากได้) / 20% สำหรับออมและลงทุน", "eg": "เงินเดือน 30,000 บาท → ความจำเป็น 15,000 / ความต้องการ 9,000 / ออม 6,000 / ถ้าออมน้อยไป ให้ลดส่วน 30% ก่อน", "tk": "ออม 20% ก่อนใช้จ่ายเลย โดย transfer อัตโนมัติวันที่ได้เงินเดือน", "q": "กฎ 50/30/20 แบ่งเงินอย่างไร?", "o": ["50% ออม 30% ใช้จ่าย 20% ลงทุน", "50% จำเป็น 30% ความต้องการ 20% ออม/ลงทุน", "50% ลงทุน 30% จำเป็น 20% ท่องเที่ยว", "50% หนี้ 30% จำเป็น 20% ออม"], "a": 1, "c": "ถูก! 50% จำเป็น / 30% ความต้องการ / 20% ออม-ลงทุน ง่ายและได้ผล", "w": "คำตอบถูกคือ 50% จำเป็น 30% ความต้องการ 20% ออม/ลงทุน"}, {"t": "Dollar Cost Averaging: ลงทุนสม่ำเสมอเอาชนะตลาด", "sc": null, "b": "DCA คือการลงทุนด้วยจำนวนเงินเท่ากันทุกเดือน โดยไม่สนใจราคาตลาด เมื่อราคาสูงซื้อได้น้อยหน่วย เมื่อราคาต่ำซื้อได้มากหน่วย ทำให้ต้นทุนเฉลี่ยต่ำลง", "eg": "ลงทุนกองทุน 3,000 บาท/เดือน ทุกวันที่ 1 ไม่ว่าตลาดจะขึ้นหรือลง → ไม่ต้องเดาตลาด ไม่ต้องติดตามข่าวทุกวัน", "tk": "ตั้ง auto-invest ทุกเดือน แล้วลืมมันไป DCA ชนะการพยายามจับจังหวะตลาดในระยะยาว", "q": "DCA (Dollar Cost Averaging) คืออะไร?", "o": ["ลงทุนเยอะตอนราคาต่ำ", "ลงทุนเงินเท่ากันทุกงวดสม่ำเสมอ ไม่สนราคา", "ลงทุนในหลายสกุลเงิน", "รอตลาดดีแล้วค่อยลงทุน"], "a": 1, "c": "ถูก! DCA = ลงทุนสม่ำเสมอ ทำให้ต้นทุนเฉลี่ยลดลงและไม่ต้องเดาตลาด", "w": "คำตอบถูกคือ ลงทุนเงินเท่ากันทุกงวดสม่ำเสมอ"}], "korean": [{"t": "ทักทายและลาอย่างมืออาชีพ", "sc": null, "b": "안녕하세요 (อันยองฮาเซโย) = สวัสดี (ทางการ) / 안녕히 가세요 (อันยองฮี กาเซโย) = ลาก่อน (พูดกับคนที่กำลังจะไป) / 안녕히 계세요 (อันยองฮี เกเซโย) = ลาก่อน (พูดกับคนที่ยังอยู่)", "eg": "เข้าออฟฟิศพบเพื่อนร่วมงาน → 안녕하세요! / ก่อนกลับบ้าน พูดกับคนที่ยังทำงาน → 안녕히 계세요!", "tk": "안녕하세요 = สวัสดี / ลาก่อนมี 2 แบบ แยกตามว่าใครกำลังจากไป", "q": "안녕하세요 หมายความว่าอะไร?", "o": ["ลาก่อน", "ขอบคุณ", "สวัสดี (ทางการ)", "ขอโทษ"], "a": 2, "c": "ถูก! 안녕하세요 = สวัสดี ใช้ได้ทุกเวลา ทางการและสุภาพ", "w": "คำตอบถูกคือ สวัสดี (ทางการ) ใช้กับทุกคนที่ไม่สนิทมาก"}, {"t": "ขอบคุณและขอโทษเป็นภาษาเกาหลี", "sc": null, "b": "감사합니다 (กัมซาฮับนิดา) = ขอบคุณมาก (ทางการมาก) / 고마워요 (โกมาวอโย) = ขอบคุณ (ทั่วไป) / 죄송합니다 (จเวซองฮับนิดา) = ขอโทษ (ทางการ) / 미안해요 (มิอานแฮโย) = ขอโทษ (ทั่วไป)", "eg": "หัวหน้าช่วยแก้ปัญหา → 감사합니다 (ขอบคุณแบบทางการ) / ทำของตกใส่เพื่อน → 미안해요 (ขอโทษแบบทั่วไป)", "tk": "감사합니다 = ขอบคุณมาก (ทางการ) / 죄송합니다 = ขอโทษ (ทางการ) ใช้กับผู้ใหญ่หรือหัวหน้า", "q": "감사합니다 หมายความว่าอะไร?", "o": ["สวัสดี", "ลาก่อน", "ขอโทษ", "ขอบคุณมาก (ทางการ)"], "a": 3, "c": "ถูก! 감사합니다 = ขอบคุณมาก ระดับทางการ ใช้กับหัวหน้าหรือผู้ใหญ่", "w": "คำตอบถูกคือ ขอบคุณมาก (ทางการ)"}, {"t": "ขอเวลาและนัดคุย", "sc": null, "b": "잠깐만요 (จัมกันมันโย) = รอสักครู่ / 잠시만요 (จัมซิมันโย) = รอแป๊บนึง / 나중에 얘기해요 (นาจュงเอ แยกิแฮโย) = คุยกันทีหลังนะ / 언제 시간 있어요? (ออนเจ ชิกัน อิสซอโย?) = คุณว่างเมื่อไหร่?", "eg": "โทรมาแล้วยุ่งอยู่ → 잠깐만요! / อยากนัดประชุม → 언제 시간 있어요?", "tk": "잠깐만요 = รอแป๊บนึง ใช้บ่อยมากเวลารับโทรศัพท์หรือถูกถาม", "q": "잠깐만요 หมายความว่าอะไร?", "o": ["ขอบคุณ", "รอสักครู่", "ลาก่อน", "ไม่เป็นไร"], "a": 1, "c": "ถูก! 잠깐만요 = รอสักครู่ ใช้ได้ทุกสถานการณ์ที่ต้องการเวลา", "w": "คำตอบถูกคือ รอสักครู่"}, {"t": "พูดถึงงานและประชุมเป็นภาษาเกาหลี", "sc": null, "b": "회의 (ฮเวอิ) = การประชุม / 회의가 있어요 (ฮเวอิกา อิสซอโย) = ฉันมีประชุม / 바빠요 (บาบบาโย) = ยุ่งมาก / 다음에 봐요 (ดาอึเมะ บวาโย) = แล้วพบกันใหม่", "eg": "เพื่อนถามว่าว่างไหม → 회의가 있어요 (มีประชุมอยู่) / ก่อนแยกจากกัน → 다음에 봐요!", "tk": "회의가 있어요 = มีประชุม / 바빠요 = ยุ่ง สองประโยคนี้ใช้บ่อยที่สุดในออฟฟิศ", "q": "회의 (ฮเวอิ) หมายความว่าอะไร?", "o": ["ห้องน้ำ", "การประชุม", "พักกลางวัน", "สำนักงาน"], "a": 1, "c": "ถูก! 회의 = การประชุม / 회의가 있어요 = ฉันมีประชุม ใช้ได้เลยในออฟฟิศ", "w": "คำตอบถูกคือ การประชุม"}]};
+const META={
+  excel:  {lbl:"EXCEL PRO",  ico:"\u{1F4CA}",nm:"Excel Pro Tips",      ds:"\u0E04\u0E35\u0E22\u0E4C\u0E25\u0E31\u0E14\u0E17\u0E35\u0E48\u0E17\u0E33\u0E07\u0E32\u0E19\u0E40\u0E23\u0E47\u0E27\u0E02\u0E36\u0E49\u0E19 3 \u0E40\u0E17\u0E48\u0E32",cl:"var(--ye)",bg:"rgba(245,200,66,.12)",ac:"rgba(245,200,66,.1)",brd:"var(--ye)",tk:"rgba(245,200,66,.1)",tl:"#b38a00"},
+  english:{lbl:"ENGLISH",    ico:"\u{1F5E3}\uFE0F",nm:"English for Work",   ds:"\u0E1B\u0E23\u0E30\u0E42\u0E22\u0E04\u0E17\u0E35\u0E48\u0E43\u0E0A\u0E49\u0E08\u0E23\u0E34\u0E07\u0E43\u0E19\u0E2D\u0E2D\u0E1F\u0E1F\u0E34\u0E28",cl:"var(--lv)",bg:"rgba(167,139,250,.12)",ac:"rgba(167,139,250,.1)",brd:"var(--lv)",tk:"rgba(167,139,250,.1)",tl:"#6b45d4"},
+  psych:  {lbl:"\u0E08\u0E34\u0E15\u0E27\u0E34\u0E17\u0E22\u0E32",ico:"\u{1F9E0}",nm:"\u0E08\u0E34\u0E15\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E32\u0E23\u0E40\u0E08\u0E23\u0E08\u0E32",ds:"\u0E40\u0E17\u0E04\u0E19\u0E34\u0E04\u0E42\u0E19\u0E49\u0E21\u0E19\u0E49\u0E32\u0E27\u0E41\u0E1A\u0E1A\u0E21\u0E37\u0E2D\u0E2D\u0E32\u0E0A\u0E35\u0E1E",cl:"var(--mi)",bg:"rgba(62,207,170,.12)",ac:"rgba(62,207,170,.1)",brd:"var(--mi)",tk:"rgba(62,207,170,.1)",tl:"#0d6b55"},
+  meta:   {lbl:"META SKILLS",ico:"\u{1F3AF}",nm:"Meta Skills",        ds:"\u0E40\u0E23\u0E35\u0E22\u0E19\u0E23\u0E39\u0E49\u0E27\u0E34\u0E18\u0E35\u0E40\u0E23\u0E35\u0E22\u0E19\u0E43\u0E2B\u0E49\u0E44\u0E14\u0E49\u0E1C\u0E25\u0E02\u0E36\u0E49\u0E19",cl:"var(--co)",bg:"rgba(255,107,81,.12)",ac:"rgba(255,107,81,.1)",brd:"var(--co)",tk:"rgba(255,107,81,.1)",tl:"#a03020"},
+  soft:   {lbl:"SOFT SKILLS",ico:"\u{1F91D}",nm:"Soft Skills",        ds:"\u0E17\u0E31\u0E01\u0E29\u0E30\u0E01\u0E32\u0E23\u0E17\u0E33\u0E07\u0E32\u0E19\u0E23\u0E48\u0E27\u0E21\u0E01\u0E31\u0E1A\u0E04\u0E19",cl:"var(--sk)",bg:"rgba(56,189,248,.12)",ac:"rgba(56,189,248,.1)",brd:"var(--sk)",tk:"rgba(56,189,248,.1)",tl:"#0567a0"},
+  writing:{lbl:"WRITING",    ico:"\u270D\uFE0F",nm:"Writing Skills",      ds:"\u0E40\u0E02\u0E35\u0E22\u0E19\u0E43\u0E2B\u0E49\u0E0A\u0E31\u0E14 \u0E01\u0E23\u0E30\u0E0A\u0E31\u0E1A \u0E19\u0E48\u0E32\u0E2D\u0E48\u0E32\u0E19",cl:"var(--ro)",bg:"rgba(244,114,182,.12)",ac:"rgba(244,114,182,.1)",brd:"var(--ro)",tk:"rgba(244,114,182,.1)",tl:"#9a1a6a"},
+  finance:{lbl:"FINANCE",    ico:"\uD83D\uDCB0",nm:"Finance Basics",     ds:"\u0E01\u0E32\u0E23\u0E40\u0E07\u0E34\u0E19\u0E17\u0E35\u0E48\u0E21\u0E19\u0E38\u0E29\u0E22\u0E4C\u0E17\u0E38\u0E01\u0E04\u0E19\u0E04\u0E27\u0E23\u0E23\u0E39\u0E49",cl:"var(--gl)",bg:"rgba(74,222,128,.12)",ac:"rgba(74,222,128,.1)",brd:"var(--gl)",tk:"rgba(74,222,128,.1)",tl:"#1a6b35"},
+  korean: {lbl:"KOREAN",     ico:"\uD83C\uDDF0\uD83C\uDDF7",nm:"Korean for Work",  ds:"\u0E20\u0E32\u0E29\u0E32\u0E40\u0E01\u0E32\u0E2B\u0E25\u0E35\u0E17\u0E35\u0E48\u0E43\u0E0A\u0E49\u0E43\u0E19\u0E2D\u0E2D\u0E1F\u0E1F\u0E34\u0E28",cl:"#FF6B9D",bg:"rgba(255,107,157,.12)",ac:"rgba(255,107,157,.1)",brd:"#FF6B9D",tk:"rgba(255,107,157,.1)",tl:"#a01a4a"}
+};
+const TIPS=["\u0E40\u0E23\u0E35\u0E22\u0E19\u0E27\u0E31\u0E19\u0E25\u0E30 1 \u0E1A\u0E17 \u0E2A\u0E21\u0E48\u0E33\u0E40\u0E2A\u0E21\u0E2D \u0E14\u0E35\u0E01\u0E27\u0E48\u0E32\u0E40\u0E23\u0E35\u0E22\u0E19 10 \u0E1A\u0E17\u0E43\u0E19\u0E27\u0E31\u0E19\u0E40\u0E14\u0E35\u0E22\u0E27","\u0E2B\u0E25\u0E31\u0E07\u0E40\u0E23\u0E35\u0E22\u0E19\u0E08\u0E1A \u0E25\u0E2D\u0E07\u0E2D\u0E18\u0E34\u0E1A\u0E32\u0E22\u0E2A\u0E34\u0E48\u0E07\u0E17\u0E35\u0E48\u0E40\u0E23\u0E35\u0E22\u0E19\u0E43\u0E2B\u0E49\u0E04\u0E19\u0E2D\u0E37\u0E48\u0E19\u0E1F\u0E31\u0E07 \u0E08\u0E30\u0E08\u0E33\u0E44\u0E14\u0E49\u0E19\u0E32\u0E19\u0E02\u0E36\u0E49\u0E19 2 \u0E40\u0E17\u0E48\u0E32","Streak \u0E44\u0E21\u0E48\u0E43\u0E0A\u0E48\u0E40\u0E1B\u0E49\u0E32\u0E2B\u0E21\u0E32\u0E22 \u0E41\u0E15\u0E48\u0E40\u0E1B\u0E47\u0E19\u0E2A\u0E31\u0E0D\u0E0D\u0E32\u0E13\u0E27\u0E48\u0E32\u0E19\u0E34\u0E2A\u0E31\u0E22\u0E14\u0E35\u0E01\u0E33\u0E25\u0E31\u0E07\u0E01\u0E48\u0E2D\u0E15\u0E31\u0E27","\u0E1A\u0E17\u0E17\u0E35\u0E48\u0E15\u0E2D\u0E1A\u0E1C\u0E34\u0E14\u0E04\u0E37\u0E2D\u0E1A\u0E17\u0E17\u0E35\u0E48\u0E40\u0E23\u0E35\u0E22\u0E19\u0E23\u0E39\u0E49\u0E44\u0E14\u0E49\u0E21\u0E32\u0E01\u0E17\u0E35\u0E48\u0E2A\u0E38\u0E14 \u0E01\u0E25\u0E31\u0E1A\u0E21\u0E32\u0E17\u0E1A\u0E17\u0E27\u0E19\u0E40\u0E2A\u0E21\u0E2D","\u0E40\u0E23\u0E35\u0E22\u0E19\u0E43\u0E19\u0E40\u0E27\u0E25\u0E32\u0E23\u0E2D = \u0E40\u0E1B\u0E25\u0E35\u0E48\u0E22\u0E19 dead time \u0E40\u0E1B\u0E47\u0E19 learning time"];
+
+/* ===== DB ===== */
+const KEY="msk_v6";
+const today=()=>new Date().toISOString().slice(0,10);
+const dayDiff=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+let db={done:new Set(),streak:{n:0,d:""},xp:0,bm:new Set(),sm2:{},
+        freezes:0,goal:50,cal:{},badges:new Set(),notif:false,lastFreezeAt:0,
+        notes:{},theme:"dark"};
+function loadDB(){try{const r=localStorage.getItem(KEY)||localStorage.getItem("msk_v5");if(r){const p=JSON.parse(r);
+  db.done=new Set(p.done||[]);db.streak=p.streak||{n:0,d:""};db.xp=p.xp||0;
+  db.bm=new Set(p.bm||[]);db.sm2=p.sm2||{};db.freezes=p.freezes||0;db.goal=p.goal||50;
+  db.cal=p.cal||{};db.badges=new Set(p.badges||[]);db.notif=!!p.notif;db.lastFreezeAt=p.lastFreezeAt||0;
+  db.notes=p.notes||{};db.theme=p.theme||"dark";}}catch(e){}}
+function saveDB(){try{localStorage.setItem(KEY,JSON.stringify({done:[...db.done],streak:db.streak,xp:db.xp,
+  bm:[...db.bm],sm2:db.sm2,freezes:db.freezes,goal:db.goal,cal:db.cal,
+  badges:[...db.badges],notif:db.notif,lastFreezeAt:db.lastFreezeAt,
+  notes:db.notes,theme:db.theme}));}catch(e){}}
+
+/* ===== Streak + Freeze ===== */
+function tickStreak(){
+  const t=today();
+  if(db.streak.d===t)return;
+  if(!db.streak.d){db.streak.n=1;db.streak.d=t;return;}
+  const gap=dayDiff(db.streak.d,t);
+  if(gap===1){
+    db.streak.n+=1;db.streak.d=t;
+    // Earn 1 freeze every 7-day milestone (cap 3)
+    if(db.streak.n%7===0 && db.freezes<3 && db.streak.n!==db.lastFreezeAt){
+      db.freezes+=1;db.lastFreezeAt=db.streak.n;
+      queueToast("🧊","STREAK FREEZE","ได้ Freeze +1 (มี "+db.freezes+")");
+    }
+  } else if(gap===2 && db.freezes>0){
+    // Consume 1 freeze to save the streak
+    db.freezes-=1;db.streak.n+=1;db.streak.d=t;
+    queueToast("🧊","FREEZE USED","Streak รอด! (เหลือ "+db.freezes+")");
+  } else {
+    db.streak.n=1;db.streak.d=t;
+  }
+}
+/* On app load: check if streak should freeze-decay even without action */
+function passiveFreezeCheck(){
+  const t=today();if(!db.streak.d||db.streak.d===t)return;
+  const gap=dayDiff(db.streak.d,t);
+  if(gap===2 && db.freezes>0){db.freezes-=1;db.streak.d=new Date(Date.now()-864e5).toISOString().slice(0,10);}
+  else if(gap>=2){db.streak.n=0;}
+  saveDB();
+}
+
+/* ===== XP / Daily Goal / Calendar ===== */
+function addXP(n){
+  db.xp+=n;
+  const t=today();db.cal[t]=(db.cal[t]||0)+n;
+  tickStreak();
+}
+function todayXP(){return db.cal[today()]||0;}
+
+/* ===== Level ===== */
+function levelOf(xp){return 1+Math.floor(Math.sqrt(xp/100));}
+function xpForLvl(l){return Math.pow(l-1,2)*100;}
+const LVL_TITLES=["Beginner","Apprentice","Learner","Skilled","Practitioner","Expert","Mentor","Master","Sage","Legend"];
+function lvlTitle(l){return LVL_TITLES[Math.min(l-1,LVL_TITLES.length-1)];}
+
+/* ===== Badges ===== */
+const BADGES=[
+  {id:"first",  i:"🎓",n:"First Step",  c:()=>db.done.size>=1},
+  {id:"d10",    i:"📚",n:"10 บท",       c:()=>db.done.size>=10},
+  {id:"d30",    i:"🎯",n:"30 บท",       c:()=>db.done.size>=30},
+  {id:"d100",   i:"💯",n:"100 บท",      c:()=>db.done.size>=100},
+  {id:"s3",     i:"🔥",n:"3 วันติด",    c:()=>db.streak.n>=3},
+  {id:"s7",     i:"🌟",n:"7 วันติด",    c:()=>db.streak.n>=7},
+  {id:"s30",    i:"👑",n:"30 วันติด",   c:()=>db.streak.n>=30},
+  {id:"xp500",  i:"⚡",n:"500 XP",      c:()=>db.xp>=500},
+  {id:"xp2k",   i:"💎",n:"2,000 XP",    c:()=>db.xp>=2000},
+  {id:"xp10k",  i:"🚀",n:"10,000 XP",   c:()=>db.xp>=10000},
+  {id:"lvl5",   i:"🥈",n:"Level 5",     c:()=>levelOf(db.xp)>=5},
+  {id:"lvl10",  i:"🥇",n:"Level 10",    c:()=>levelOf(db.xp)>=10},
+  {id:"cat1",   i:"🏁",n:"จบ 1 หมวด",   c:()=>Object.keys(DATA).some(k=>catProg(k).done===catProg(k).tot)},
+  {id:"catall", i:"🏆",n:"จบทุกหมวด",   c:()=>Object.keys(DATA).every(k=>catProg(k).done===catProg(k).tot)},
+  {id:"perfect",i:"🎖️",n:"Perfect 3/3", c:()=>db.badges.has("perfect")},
+  {id:"goal1",  i:"✅",n:"แตะเป้าวันแรก",c:()=>db.badges.has("goal1")},
+  {id:"goal7",  i:"📅",n:"แตะเป้า 7 วัน",c:()=>db.badges.has("goal7")},
+];
+let _goalDaysHit=0;
+function checkBadges(){
+  let unlocked=[];
+  BADGES.forEach(b=>{if(!db.badges.has(b.id)&&b.c()){db.badges.add(b.id);unlocked.push(b);}});
+  unlocked.forEach(b=>queueToast(b.i,"BADGE UNLOCKED",b.n));
+}
+function markPerfect(){db.badges.add("perfect");}
+function checkGoalHit(){
+  if(todayXP()>=db.goal && !db.badges.has("goal1")){db.badges.add("goal1");}
+  // count distinct days that hit goal
+  const hits=Object.entries(db.cal).filter(([d,x])=>x>=db.goal).length;
+  if(hits>=7 && !db.badges.has("goal7")) db.badges.add("goal7");
+}
+
+/* ===== SM-2 (Anki q=0..5) ===== */
+/* q: 0=Again, 2=Hard, 4=Good, 5=Easy */
+function sm2Update(cat,idx,q){
+  const k=cat+"_"+idx;
+  let c=db.sm2[k]||{i:0,ef:2.5,nr:"",r:0};
+  if(q<3){c.r=0;c.i=0;}
+  else{
+    if(c.r===0)c.i=1;
+    else if(c.r===1)c.i=q===5?6:3;
+    else c.i=Math.max(1,Math.round(c.i*c.ef*(q===2?0.6:q===5?1.3:1)));
+    c.r++;
+    c.ef=Math.max(1.3,c.ef+(0.1-(5-q)*(0.08+(5-q)*0.02)));
+  }
+  const d=new Date();d.setDate(d.getDate()+(c.i||0));
+  c.nr=d.toISOString().slice(0,10);
+  db.sm2[k]=c;
+  return c.i;
+}
+function predictInterval(cat,idx,q){
+  const k=cat+"_"+idx;
+  let c=db.sm2[k]?{...db.sm2[k]}:{i:0,ef:2.5,nr:"",r:0};
+  if(q<3) return 0;
+  if(c.r===0) return 1;
+  if(c.r===1) return q===5?6:3;
+  return Math.max(1,Math.round(c.i*c.ef*(q===2?0.6:q===5?1.3:1)));
+}
+function fmtInterval(d){
+  if(d<=0)return "<10น.";
+  if(d===1)return "1 วัน";
+  if(d<30)return d+" วัน";
+  if(d<365)return Math.round(d/30)+" เดือน";
+  return Math.round(d/365)+" ปี";
+}
+function isDone(c,i){return db.done.has(c+"_"+i);}
+function isDue(c,i){if(!isDone(c,i))return false;const r=db.sm2[c+"_"+i];if(!r||!r.nr)return true;return r.nr<=today();}
+function catProg(c){const tot=DATA[c].length,done=[...db.done].filter(k=>k.startsWith(c+"_")).length;return{done:Math.min(done,tot),tot};}
+function nextIdx(c){for(let i=0;i<DATA[c].length;i++)if(!isDone(c,i))return i;return 0;}
+function isReview(c){return DATA[c].every((_,i)=>isDone(c,i));}
+function totalDone(){return db.done.size;}
+function getDues(){const r=[];Object.keys(DATA).forEach(c=>DATA[c].forEach((_,i)=>{if(isDue(c,i))r.push({cat:c,idx:i});}));return r;}
+function getNews(){const r=[];Object.keys(DATA).forEach(c=>DATA[c].forEach((_,i)=>{if(!isDone(c,i))r.push({cat:c,idx:i});}));return r;}
+
+/* ===== Toast queue ===== */
+let toastQ=[],toastBusy=false;
+function queueToast(ico,tag,name){toastQ.push({ico,tag,name});runToast();}
+function runToast(){if(toastBusy||!toastQ.length)return;toastBusy=true;
+  const{ico,tag,name}=toastQ.shift();const el=document.getElementById("toast");
+  el.querySelector(".ti").textContent=ico;el.querySelector(".tt").textContent=tag;el.querySelector(".tn").textContent=name;
+  el.classList.add("show");setTimeout(()=>{el.classList.remove("show");setTimeout(()=>{toastBusy=false;runToast();},400);},2400);}
+
+/* ===== State ===== */
+let S={time:10,cat:"excel",idx:0,t0:null,iv:null,sec:600,rev:false};
+let Q=[],QP=-1; // session lesson queue
+let QZ=[],QZP=0,QZok=0; // quiz items within one lesson
+let lastEarned=0;
+
+function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);}
+
+/* ===== TODAY ===== */
+function goToday(){
+  passiveFreezeCheck();
+  const dues=getDues(),news=getNews();
+  const h=new Date().getHours();
+  const gr=h<12?"อรุณสวัสดิ์ ☀️":h<17?"สวัสดีตอนบ่าย 🌞":"สวัสดีตอนเย็น 🌙";
+  document.getElementById("td-gr").textContent=gr;
+  document.getElementById("td-date").textContent=new Date().toLocaleDateString("th-TH",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  document.getElementById("td-due").textContent=dues.length;
+  document.getElementById("td-new").textContent=news.length;
+  document.getElementById("td-sst").textContent=db.streak.n;
+  document.getElementById("td-sxp").textContent=db.xp;
+  document.getElementById("td-frz").textContent=db.freezes;
+  document.getElementById("td-lvl").textContent=levelOf(db.xp);
+
+  // Daily goal ring
+  const xpT=todayXP(),pct=Math.min(100,Math.round(xpT/db.goal*100));
+  const circ=2*Math.PI*22;
+  document.getElementById("td-ring").style.strokeDashoffset=circ*(1-pct/100);
+  document.getElementById("td-ringtxt").textContent=pct+"%";
+  document.getElementById("td-goalval").textContent=xpT+" / "+db.goal+" XP";
+  document.getElementById("td-goalsub").textContent=xpT>=db.goal?"🎉 ครบเป้าวันนี้แล้ว!":"อีก "+(db.goal-xpT)+" XP ถึงเป้า";
+
+  const dl=document.getElementById("td-duelist");dl.innerHTML="";
+  if(dues.length===0){const e=document.createElement("div");e.className="td-empty";e.textContent="✅ ไม่มีบทที่ต้องทบทวนวันนี้";dl.appendChild(e);}
+  else dues.slice(0,3).forEach(({cat,idx})=>renderTdItem(dl,cat,idx));
+  const nl=document.getElementById("td-newlist");nl.innerHTML="";
+  if(news.length===0){const e=document.createElement("div");e.className="td-empty";e.textContent="🏆 เรียนครบทุกบทแล้ว!";nl.appendChild(e);}
+  else news.slice(0,2).forEach(({cat,idx})=>renderTdItem(nl,cat,idx));
+  showScreen("sd");
+}
+function renderTdItem(parent,cat,idx){
+  const d=DATA[cat][idx],m=META[cat];
+  const el=document.createElement("div");el.className="td-item";
+  const i=document.createElement("span");i.className="td-item-ico";i.textContent=m.ico;
+  const t=document.createElement("span");t.className="td-item-t";t.textContent=d.t;
+  el.appendChild(i);el.appendChild(t);el.onclick=()=>startSpecific(cat,idx);parent.appendChild(el);
+}
+function startToday(){
+  const dues=getDues().slice(0,5),news=getNews().slice(0,3);
+  Q=[...dues,...news];QP=0;
+  if(Q.length===0){goStats();return;}
+  runQ();
+}
+function runQ(){
+  if(QP>=Q.length){goToday();return;}
+  const {cat,idx}=Q[QP];startSpecific(cat,idx,true);
+}
+function startSpecific(cat,idx,inQ=false){
+  S.cat=cat;S.idx=idx;S.rev=isDone(cat,idx);S.t0=Date.now();S.sec=S.time*60;
+  if(!inQ){Q=[{cat,idx}];QP=0;}
+  buildQuizSet(cat,idx);
+  startTimer();fillCard();showScreen("sc");
+}
+
+/* ===== Cards ===== */
+function renderCats(){
+  const g=document.getElementById("catgrid");g.innerHTML="";
+  Object.entries(META).forEach(([k,m])=>{
+    const p=catProg(k),pct=Math.round(p.done/p.tot*100),active=S.cat===k;
+    const b=document.createElement("button");b.className="cbtn";
+    if(active)b.style.borderColor=m.brd;
+    const ico=document.createElement("div");ico.className="cicon";ico.style.background=m.bg;ico.textContent=m.ico;
+    const info=document.createElement("div");info.className="cinfo";
+    const ti=document.createElement("div");ti.className="ctitle";ti.textContent=m.nm;
+    const ds=document.createElement("div");ds.className="cdesc";ds.textContent=m.ds;
+    info.appendChild(ti);info.appendChild(ds);
+    const pr=document.createElement("div");pr.className="cprog";
+    const pt=document.createElement("div");pt.className="cptext";pt.textContent=p.done+"/"+p.tot;
+    const pb=document.createElement("div");pb.className="cpbar";
+    const pf=document.createElement("div");pf.className="cpfill";pf.style.width=pct+"%";pf.style.background=m.cl;
+    pb.appendChild(pf);pr.appendChild(pt);pr.appendChild(pb);
+    b.appendChild(ico);b.appendChild(info);b.appendChild(pr);
+    b.onclick=()=>{S.cat=k;renderCats();};
+    g.appendChild(b);
+  });
+}
+function selTime(min,btn){S.time=min;S.sec=min*60;document.querySelectorAll(".tbtn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");}
+function startLesson(){S.idx=nextIdx(S.cat);S.rev=isReview(S.cat);S.t0=Date.now();S.sec=S.time*60;Q=[];QP=-1;buildQuizSet(S.cat,S.idx);startTimer();fillCard();showScreen("sc");}
+
+function fillCard(){
+  const d=DATA[S.cat][S.idx],m=META[S.cat],tot=DATA[S.cat].length;
+  const cb=document.getElementById("cbadge");cb.textContent=m.ico+" "+m.lbl;cb.style.cssText="background:"+m.bg+";color:"+m.cl;
+  document.getElementById("rvbadge").style.display=S.rev?"inline-block":"none";
+  document.getElementById("lnum").textContent="บทที่ "+(S.idx+1)+"/"+tot;
+  document.getElementById("cardtitle").textContent=d.t;
+  const sb=document.getElementById("scbadge");
+  if(d.sc){sb.style.display="inline-block";sb.textContent=d.sc;}else sb.style.display="none";
+  document.getElementById("cardbody").textContent=d.b;
+  document.getElementById("cardeg").textContent=d.eg;
+  document.getElementById("tktext").textContent=d.tk;
+  document.getElementById("pf1").style.width="25%";
+  document.getElementById("pf1").style.background=m.cl;
+  updateBmBtn();
+  // Load note
+  const nk=S.cat+"_"+S.idx;
+  document.getElementById("noteinput").value=db.notes[nk]||"";
+  document.getElementById("notesave").classList.remove("show");
+  stopTTS();
+}
+function toggleBm(){const k=S.cat+"_"+S.idx;if(db.bm.has(k))db.bm.delete(k);else db.bm.add(k);saveDB();updateBmBtn();}
+function updateBmBtn(){const k=S.cat+"_"+S.idx;document.getElementById("bmbtn").innerHTML=db.bm.has(k)?"★":"☆";document.getElementById("bmbtn").style.color=db.bm.has(k)?"var(--ye)":"var(--mu)";}
+
+function startTimer(){clearInterval(S.iv);updTimer();S.iv=setInterval(()=>{S.sec--;updTimer();if(S.sec<=0)clearInterval(S.iv);},1000);}
+function updTimer(){const m=Math.floor(S.sec/60),s=S.sec%60,str=m+":"+(s<10?"0":"")+s;["t1","t2"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=str;});}
+
+/* ===== Multi-question quiz set ===== */
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function buildQuizSet(cat,idx){
+  const d=DATA[cat][idx];
+  QZ=[];QZP=0;QZok=0;
+  // Q1: original MC (shuffle options)
+  const order=shuffle(d.o.map((_,i)=>i));
+  QZ.push({type:"mc",q:d.q,opts:order.map(i=>d.o[i]),a:order.indexOf(d.a),expC:d.c,expW:d.w});
+  // Q2: True/False — "ข้อความนี้อธิบาย [d.t] ถูกต้องหรือไม่?"
+  const correctOpt=d.o[d.a];
+  const wrongIdx=[0,1,2,3].filter(i=>i!==d.a);
+  const wrongOpt=d.o[wrongIdx[Math.floor(Math.random()*wrongIdx.length)]];
+  const useTrue=Math.random()<0.5;
+  const stmt=useTrue?correctOpt:wrongOpt;
+  QZ.push({type:"tf",q:'"'+stmt+'" — เกี่ยวกับ '+d.t+' ข้อความนี้ถูกหรือไม่?',
+    opts:["✓ ถูก","✗ ไม่ถูก"],a:useTrue?0:1,
+    expC:"ใช่แล้ว — "+correctOpt+" คือคำตอบของ "+d.t,
+    expW:"คำตอบที่ถูกจริงๆ คือ: "+correctOpt});
+  // Q3: Fill-in — use the takeaway line; blank out a key word
+  let tk=d.tk;
+  // Find candidate to blank: shortcut text or longest word
+  let blank=d.sc||"";
+  if(!blank){
+    const words=tk.split(/\s+/).filter(w=>w.length>4&&!/[?!.]/.test(w));
+    if(words.length) blank=words.sort((a,b)=>b.length-a.length)[0];
+  }
+  if(blank && tk.includes(blank)){
+    const qText="เติมคำในช่องว่าง: "+tk.replace(blank,"____");
+    // build distractors from other lessons in same cat
+    const others=DATA[cat].filter((_,i)=>i!==idx).map(x=>x.sc||x.t.split(/\s+/)[0]).filter(Boolean);
+    const distract=shuffle(others).slice(0,3);
+    const opts=shuffle([blank,...distract,"ไม่มีข้อใดถูก"].slice(0,4));
+    QZ.push({type:"fb",q:qText,opts,a:opts.indexOf(blank),expC:"ถูก! คำที่หายไปคือ "+blank,expW:"คำที่ถูกต้องคือ "+blank});
+  } else {
+    // fallback: reshuffle original
+    const order2=shuffle(d.o.map((_,i)=>i));
+    QZ.push({type:"mc",q:"ทบทวน: "+d.q,opts:order2.map(i=>d.o[i]),a:order2.indexOf(d.a),expC:d.c,expW:d.w});
+  }
+}
+
+function goQuiz(){renderQuestion();showScreen("sq");}
+function renderQuestion(){
+  const q=QZ[QZP],m=META[S.cat],tot=QZ.length;
+  document.getElementById("qcounter").textContent="ข้อ "+(QZP+1)+" / "+tot;
+  document.getElementById("qtag").textContent={mc:"🎯 MULTIPLE CHOICE",tf:"⚖️ TRUE / FALSE",fb:"✍️ FILL IN BLANK"}[q.type];
+  document.getElementById("quizq").textContent=q.q;
+  document.getElementById("pf2").style.width=(50+QZP/tot*50)+"%";
+  document.getElementById("pf2").style.background=m.cl;
+  const g=document.getElementById("optgrid");g.innerHTML="";
+  q.opts.forEach((opt,i)=>{const b=document.createElement("button");b.className="opt";b.textContent=opt;b.onclick=()=>checkAns(i);g.appendChild(b);});
+  document.getElementById("fbbox").className="fbbox";
+  document.getElementById("seebtn").className="seebtn";
+}
+function checkAns(idx){
+  const q=QZ[QZP];const ok=idx===q.a;
+  if(ok)QZok++;
+  document.querySelectorAll(".opt").forEach((b,i)=>{b.classList.add("dis");if(i===q.a)b.classList.add("correct");else if(i===idx)b.classList.add("wrong");});
+  const fb=document.getElementById("fbbox");fb.className="fbbox show "+(ok?"ok":"ng");
+  document.getElementById("fblabel").textContent=ok?"✓ ถูกต้อง":"✗ ยังไม่ใช่";
+  document.getElementById("fbtext").textContent=ok?q.expC:q.expW;
+  const sb=document.getElementById("seebtn");sb.classList.add("show");
+  sb.textContent=QZP<QZ.length-1?"ข้อต่อไป →":"ดูผลการเรียน →";
+}
+function nextQuestion(){
+  if(QZP<QZ.length-1){QZP++;renderQuestion();}
+  else goResult();
+}
+
+/* ===== Result ===== */
+function goResult(){
+  clearInterval(S.iv);
+  const el=Math.floor((Date.now()-S.t0)/1000),mm=Math.floor(el/60),ss=el%60;
+  const m=META[S.cat],d=DATA[S.cat][S.idx];
+  const score=QZok,tot=QZ.length;
+  const perfect=score===tot;
+  const xp=score*10+(perfect?20:0);
+  lastEarned=xp;
+  document.getElementById("xpe").textContent="+"+xp;
+  document.getElementById("xsc").textContent=score+" / "+tot;
+  document.getElementById("xtu").textContent=mm+":"+(ss<10?"0":"")+ss;
+  const ri=document.getElementById("resicon");
+  ri.style.background=m.bg;ri.style.color=m.cl;ri.textContent=perfect?"🏆":(score>=2?"⚡":"💡");
+  document.getElementById("restitle").innerHTML=perfect?'<em>เยี่ยม!</em> ทำได้ครบ '+tot+' ข้อ':(score>=2?"ทำได้ดี":"ลองอีกครั้งนะ");
+  document.getElementById("ressub").textContent=perfect?"จำได้แม่นมาก ขยับช่วงทบทวนได้ยาวขึ้น":"ประเมินตัวเองด้านล่าง ระบบจะนัดทบทวนให้";
+  if(perfect)markPerfect();
+  // Predict intervals for the 4 rating buttons
+  [0,2,4,5].forEach(q=>{
+    const d2=predictInterval(S.cat,S.idx,q);
+    const el=document.getElementById("rn"+q);if(el)el.textContent=fmtInterval(d2);
+  });
+  document.getElementById("ratewrap").style.display="flex";
+  document.getElementById("resactions").style.display="none";
+  showScreen("sr");
+}
+function rate(q){
+  const intv=sm2Update(S.cat,S.idx,q);
+  db.done.add(S.cat+"_"+S.idx);
+  addXP(lastEarned);
+  checkGoalHit();
+  checkBadges();
+  saveDB();
+  // Update result UI to show next step
+  const sub=document.getElementById("ressub");
+  sub.textContent="🗓️ ทบทวนครั้งถัดไป: ใน "+fmtInterval(intv);
+  document.getElementById("ratewrap").style.display="none";
+  document.getElementById("resactions").style.display="flex";
+  // Adjust next button label
+  const inQ=Q.length>0&&QP>=0&&QP<Q.length-1;
+  document.getElementById("nextbtn").textContent=inQ?"บทถัดไปในคิว ("+(Q.length-QP-1)+") →":"เรียนบทต่อไป →";
+}
+function nextLesson(){
+  if(Q.length>0&&QP>=0&&QP<Q.length-1){QP++;runQ();return;}
+  if(!isReview(S.cat)){startSpecific(S.cat,nextIdx(S.cat));return;}
+  goToday();
+}
+
+/* ===== Browse ===== */
+let BF="all",BS="";
+function goBrowse(){renderBrowseTabs();renderBrowseList();document.getElementById("br-search").value="";showScreen("sbr");}
+function filterBrowse(){BS=document.getElementById("br-search").value.toLowerCase();renderBrowseList();}
+function renderBrowseTabs(){
+  const tabs=document.getElementById("br-tabs");tabs.innerHTML="";
+  [["all","ทั้งหมด"],["due","ต้องทบทวน"],["bm","บันทึกไว้"],...Object.entries(META).map(([k,m])=>[k,m.nm])].forEach(([k,n])=>{
+    const btn=document.createElement("button");btn.className="br-tab"+(BF===k?" active":"");btn.textContent=n;btn.onclick=()=>{BF=k;renderBrowseTabs();renderBrowseList();};tabs.appendChild(btn);
+  });
+}
+function renderBrowseList(){
+  const list=document.getElementById("br-list");list.innerHTML="";
+  Object.keys(DATA).forEach(cat=>{
+    DATA[cat].forEach((d,idx)=>{
+      const key=cat+"_"+idx;
+      if(BF!=="all"&&BF!=="due"&&BF!=="bm"&&BF!==cat)return;
+      if(BF==="due"&&!isDue(cat,idx))return;
+      if(BF==="bm"&&!db.bm.has(key))return;
+      if(BS){const hay=(d.t+" "+(d.sc||"")+" "+(d.tk||"")+" "+(d.b||"")).toLowerCase();if(!hay.includes(BS))return;}
+      const m=META[cat],done=isDone(cat,idx),due=isDue(cat,idx),bm=db.bm.has(key);
+      const el=document.createElement("div");el.className="br-item";
+      const ico=document.createElement("div");ico.className="br-ico";ico.style.background=m.bg;ico.textContent=m.ico;
+      const info=document.createElement("div");info.style.flex="1";info.style.minWidth="0";
+      const ti=document.createElement("div");ti.className="br-title";ti.textContent=d.t;
+      const sub=document.createElement("div");sub.className="br-sub";
+      if(done){const s=document.createElement("span");s.className="br-badge done";s.textContent="✓";sub.appendChild(s);}
+      if(due){const s=document.createElement("span");s.className="br-badge due";s.textContent="🔄";sub.appendChild(s);}
+      if(bm){const s=document.createElement("span");s.className="br-badge bm";s.textContent="★";sub.appendChild(s);}
+      const c2=document.createElement("span");c2.className="br-cat";c2.textContent=m.ico+" "+m.nm;sub.appendChild(c2);
+      info.appendChild(ti);info.appendChild(sub);
+      el.appendChild(ico);el.appendChild(info);
+      el.onclick=()=>startSpecific(cat,idx);
+      list.appendChild(el);
+    });
+  });
+  if(list.children.length===0){const e=document.createElement("div");e.className="br-empty";e.textContent="ไม่พบบทเรียนที่ค้นหา";list.appendChild(e);}
+}
+
+/* ===== Stats / Heatmap / Badges ===== */
+function goStats(){
+  document.getElementById("st-streak").textContent=db.streak.n;
+  document.getElementById("st-frz").textContent=db.freezes;
+  document.getElementById("st-xp").textContent=db.xp;
+  document.getElementById("st-done").textContent=totalDone();
+  // Level
+  const l=levelOf(db.xp),cur=xpForLvl(l),nxt=xpForLvl(l+1),pct=Math.round((db.xp-cur)/(nxt-cur)*100);
+  document.getElementById("st-lvl").textContent=l;
+  document.getElementById("st-lvlnext").textContent=(db.xp-cur)+" / "+(nxt-cur)+" XP";
+  document.getElementById("st-lvltitle").textContent=lvlTitle(l);
+  document.getElementById("st-lvlfill").style.width=pct+"%";
+  // Heatmap (49 days, ending today)
+  const hm=document.getElementById("heatmap");hm.innerHTML="";
+  const tt=today();
+  for(let i=48;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const ds=d.toISOString().slice(0,10);
+    const v=db.cal[ds]||0;
+    const lvl=v===0?0:v<30?1:v<70?2:v<120?3:4;
+    const cell=document.createElement("div");cell.className="hmcell";
+    if(lvl)cell.setAttribute("data-l",lvl);
+    if(ds===tt)cell.setAttribute("data-today","1");
+    cell.title=ds+" — "+v+" XP";
+    hm.appendChild(cell);
+  }
+  // Badges
+  checkBadges();
+  const bg=document.getElementById("badgegrid");bg.innerHTML="";
+  const unlocked=BADGES.filter(b=>db.badges.has(b.id)).length;
+  document.getElementById("st-badgecount").textContent="("+unlocked+"/"+BADGES.length+")";
+  BADGES.forEach(b=>{
+    const el=document.createElement("div");el.className="badge"+(db.badges.has(b.id)?" unlocked":"");
+    el.innerHTML='<div class="bgico">'+b.i+'</div><div class="bgname">'+b.n+'</div>';
+    bg.appendChild(el);
+  });
+  // Category progress
+  const list=document.getElementById("catproglist");list.innerHTML="";
+  Object.entries(META).forEach(([k,m])=>{
+    const p=catProg(k),pct=Math.round(p.done/p.tot*100);
+    const row=document.createElement("div");row.className="catrow";
+    const ico=document.createElement("div");ico.style.cssText="font-size:1rem;width:22px;text-align:center;flex-shrink:0";ico.textContent=m.ico;
+    const nm=document.createElement("div");nm.style.cssText="font-size:11.5px;flex:1";nm.textContent=m.nm;
+    const bar=document.createElement("div");bar.className="catrowbar";
+    const fill=document.createElement("div");fill.className="catrowfill";fill.style.width=pct+"%";fill.style.background=m.cl;
+    bar.appendChild(fill);const pct2=document.createElement("div");pct2.className="catrowpct";pct2.textContent=pct+"%";
+    row.appendChild(ico);row.appendChild(nm);row.appendChild(bar);row.appendChild(pct2);list.appendChild(row);
+  });
+  document.getElementById("tiptext").textContent=TIPS[new Date().getDate()%TIPS.length];
+  // Settings
+  const sl=document.getElementById("goalslider");sl.value=db.goal;document.getElementById("goalv").textContent=db.goal;
+  sl.oninput=()=>{db.goal=+sl.value;document.getElementById("goalv").textContent=db.goal;saveDB();};
+  document.getElementById("notiftog").classList.toggle("on",db.notif);
+  showScreen("ss");
+}
+function toggleNotif(){
+  if(!("Notification" in window)){alert("เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน");return;}
+  if(db.notif){db.notif=false;saveDB();document.getElementById("notiftog").classList.remove("on");return;}
+  Notification.requestPermission().then(p=>{
+    if(p==="granted"){db.notif=true;saveDB();document.getElementById("notiftog").classList.add("on");
+      new Notification("🎯 เปิดแจ้งเตือนแล้ว",{body:"จะเตือนเมื่อมีบทค้างทบทวน"});}
+    else{alert("ต้องอนุญาตการแจ้งเตือนในเบราว์เซอร์ก่อน");}
+  });
+}
+function resetProgress(){if(confirm("รีเซตข้อมูลทั้งหมด? (XP, streak, badges จะหายหมด)")){localStorage.removeItem(KEY);db={done:new Set(),streak:{n:0,d:""},xp:0,bm:new Set(),sm2:{},freezes:0,goal:50,cal:{},badges:new Set(),notif:false,lastFreezeAt:0};goToday();}}
+
+/* ===== Notification check on load ===== */
+function maybeNotify(){
+  if(!db.notif||!("Notification" in window)||Notification.permission!=="granted")return;
+  const dues=getDues().length;
+  if(dues>0){
+    const k="notif_"+today();
+    if(!localStorage.getItem(k)){
+      new Notification("🔔 มีบทค้างทบทวน "+dues+" บท",{body:"กลับมาเรียน 10 นาทีกันเถอะ"});
+      localStorage.setItem(k,"1");
+    }
+  }
+}
+
+/* ===== Theme ===== */
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme",db.theme);
+  const b=document.getElementById("themebtn");if(b)b.textContent=db.theme==="light"?"☀️":"🌙";
+}
+function toggleTheme(){db.theme=db.theme==="light"?"dark":"light";applyTheme();saveDB();}
+
+/* ===== TTS (Web Speech API) ===== */
+let ttsPlaying=false,ttsVoice=null;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices();
+  ttsVoice=vs.find(v=>v.lang.startsWith("th"))||vs.find(v=>v.lang.startsWith("en"))||vs[0]||null;
+}
+if("speechSynthesis" in window){speechSynthesis.onvoiceschanged=pickVoice;pickVoice();}
+function stopTTS(){if("speechSynthesis" in window){speechSynthesis.cancel();}ttsPlaying=false;const b=document.getElementById("ttsbtn");if(b)b.classList.remove("playing");}
+function toggleTTS(){
+  if(!("speechSynthesis" in window)){alert("เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง");return;}
+  if(ttsPlaying){stopTTS();return;}
+  const d=DATA[S.cat][S.idx];
+  const text=[d.t, d.sc?("คีย์ลัด: "+d.sc):"", d.b, "ตัวอย่าง: "+d.eg, "จำไว้: "+d.tk].filter(Boolean).join(". ");
+  const u=new SpeechSynthesisUtterance(text);
+  if(ttsVoice)u.voice=ttsVoice;
+  u.lang=ttsVoice?ttsVoice.lang:"th-TH";u.rate=1;u.pitch=1;
+  u.onend=()=>{ttsPlaying=false;document.getElementById("ttsbtn").classList.remove("playing");};
+  u.onerror=u.onend;
+  speechSynthesis.cancel();speechSynthesis.speak(u);
+  ttsPlaying=true;document.getElementById("ttsbtn").classList.add("playing");
+}
+
+/* ===== Notes ===== */
+let noteTimer=null;
+function saveNote(){
+  const k=S.cat+"_"+S.idx,v=document.getElementById("noteinput").value;
+  if(v.trim())db.notes[k]=v;else delete db.notes[k];
+  clearTimeout(noteTimer);
+  noteTimer=setTimeout(()=>{saveDB();const e=document.getElementById("notesave");e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1500);},400);
+}
+
+/* ===== Init ===== */
+loadDB();applyTheme();passiveFreezeCheck();checkBadges();renderCats();goToday();maybeNotify();
+
+/* ===== Touch swipe (card screen) ===== */
+let tx=0,ty=0,swiping=false;
+document.addEventListener("touchstart",e=>{tx=e.changedTouches[0].clientX;ty=e.changedTouches[0].clientY;swiping=true;},{passive:true});
+document.addEventListener("touchmove",e=>{
+  if(!swiping)return;
+  const sc=document.querySelector(".screen.active");if(!sc||sc.id!=="sc")return;
+  const t=e.target;if(t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"))return;
+  const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dy)>Math.abs(dx))return;
+  const cm=document.getElementById("cardmain");if(!cm)return;
+  cm.style.transform="translateX("+(dx*0.4)+"px)";cm.style.opacity=String(1-Math.min(Math.abs(dx)/300,.5));
+},{passive:true});
+document.addEventListener("touchend",e=>{
+  swiping=false;
+  const sc=document.querySelector(".screen.active");if(!sc)return;
+  const cm=document.getElementById("cardmain");if(cm){cm.style.transform="";cm.style.opacity="";}
+  const t=e.target;if(t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"))return;
+  const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)<80||Math.abs(dy)>60)return;
+  if(sc.id==="sc"){
+    if(dx<-80)goQuiz();
+    else if(dx>80){stopTTS();goToday();}
+  }
+});
+</script>
+</body>
+</html>
